@@ -1,0 +1,23 @@
+server{
+    listen			10.11.2.9:3030;
+    server_name server_1
+    max_client_body_size  4294967295
+    error_page 404 './error_pages/200.html'
+    location / {
+        allow_methods GET POST DELETE;
+        #redirect 'https://www.facebook.com/'
+        autoindex on;
+        root './public';
+        index index.html index.php
+        upload_pass './uploads'
+        #cgi_pass php './cgi-bin/php-cgi'
+        #cgi_pass py '/usr/local/bin/python3'
+    }
+    location /ayoub {
+        allow_methods GET POST DELETE;
+        autoindex on;
+        root './root/others';
+        cgi_pass php './cgi-bin/php-cgi'
+        cgi_pass py '/usr/local/bin/python3'
+    }
+}

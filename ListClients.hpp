@@ -1,0 +1,66 @@
+#ifndef LIST_CLIENT_HPP
+#define LIST_CLIENT_HPP
+
+
+#include "client.hpp"
+
+class ListClients
+{
+	private:
+		std::vector<Client> _clients;
+	public:
+		int	getClient(SOCKET clientSocket) const
+		{
+			for (int i = 0; i < _clients.size(); i++)
+			{
+				if (_clients[i].socket == clientSocket)
+					return (i);
+			}
+			return (-1);
+		}
+
+
+		void AddClient(Client client)
+		{
+			_clients.push_back(client);
+		}
+
+		bool isClientExist(SOCKET clientSocket)
+		{
+			int clientIdx = getClient(clientSocket);
+			return (clientIdx != CLIENT_NOT_FOUND);
+		}
+
+		void dropClient(SOCKET clientSocket)
+		{
+			int clientIdx = getClient(clientSocket);
+			if (clientIdx != CLIENT_NOT_FOUND)
+			{
+				CLOSESOCKET(_clients[clientIdx].socket);
+				_clients.erase(_clients.begin() + clientIdx);
+			}
+		}
+
+		Client &operator [](int i)
+		{
+			if (i < 0 || i >= (int)_clients.size())
+				throw std::out_of_range("Out Of Bounds");
+			return (_clients[i]);
+		}
+
+		const Client &operator [](int i) const
+		{
+			if (i < 0 || i >= (int)_clients.size())
+				throw std::out_of_range("Out Of Bounds");
+			return (_clients[i]);
+		}
+		
+		unsigned int getNumberClient() const
+		{
+			return (_clients.size());
+		}
+		
+};
+
+
+#endif
