@@ -20,11 +20,15 @@
 #define FAILURE 0
 #define SUCCESS 1
 
+#define INFINI 0
+
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <vector>
+#include <utility>
+#include <map>
 #include <string>
 #include <iostream>
 #include <fstream>

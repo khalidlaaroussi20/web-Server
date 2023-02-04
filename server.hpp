@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/01/30 14:43:17 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/03 17:46:39 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,14 +16,14 @@
 
 
 #include "ListClients.hpp"
+#include "parsing/configParser/ServerConfigs.hpp"
 
 
 
 class Server
 {
 	private :
-		char			*_host;
-		char 			*_port;
+		ServerConfigs	_serverConfigs;
 		SOCKET 			_serverSocket;
 		SOCKET			_maxSocketSoFar;
 		ListClients		_clients;
@@ -31,15 +31,12 @@ class Server
 	public :
 		Server()
 		{
-			_host = _port = nullptr;
 			_serverSocket = _maxSocketSoFar = INVALID_FD;
 		}
 
-		Server(char	*host, char 	*port)
+		ServerConfigs	&getServerConfigs()
 		{
-			_host = host;
-			_port = port;
-			_serverSocket = _maxSocketSoFar = INVALID_FD;
+			return (_serverConfigs);
 		}
 
 		const char *get_content_type(const char* path) {
@@ -72,7 +69,8 @@ class Server
 			hints.ai_flags = AI_PASSIVE;
 
 			struct addrinfo *bind_address;
-			getaddrinfo(_host, _port, &hints, &bind_address);
+			getaddrinfo(_serverConfigs.getHost().c_str(), _serverConfigs.getServ().c_str(), \
+			&hints, &bind_address);
 
 			printf("Creating socket...\n");
 			_serverSocket = socket(bind_address->ai_family,
