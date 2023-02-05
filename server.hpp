@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/03 17:46:39 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/05 17:50:09 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,16 @@ class Server
 		ServerConfigs	&getServerConfigs()
 		{
 			return (_serverConfigs);
+		}
+
+		SOCKET getSocket() const
+		{
+			return (_serverSocket);
+		}
+
+		ListClients &getClients()
+		{
+			return (_clients);
 		}
 
 		const char *get_content_type(const char* path) {
@@ -90,11 +100,13 @@ class Server
 			freeaddrinfo(bind_address);
 
 			printf("Listening...\n");
-			if (listen(_serverSocket, 10) < 0) {
+			if (listen(_serverSocket, 100) < 0) {
 				fprintf(stderr, "listen() failed. (%d)\n", GETSOCKETERRNO());
 				exit(1);
 			}
 		}
+
+		
 
 		void addClientSocket(std::pair<fd_set, fd_set> &ioSocket)
 		{
@@ -122,8 +134,67 @@ class Server
 			return p;
 		}
 
+		Location &getBestMatchedLocation(std::vector <Location> &locations, std::string path)
+		{
+			int idxBestLocation = 0;
+			int maxLenMatched = 1;
+			for (int i = locations.size() - 1 ; i > 0; i--)
+			{
+				if (locations[i].isRouteMatch(path))
+				{
+					if (locations[i].getRoute().length() > maxLenMatched)
+					{
+						maxLenMatched = locations[i].getRoute().length();
+						idxBestLocation = i;
+					}
+				}
+			}
+			return (locations[idxBestLocation]);
+		}
+		
+		std::string getPathRessource(Location &bestLocationMatched, std::string path)
+		{
+			std::string currPath = bestLocationMatched.getRoot();
+			currPath += path.substr(bestLocationMatched.getRoute().length(), path.length());
+			return (currPath); 
+		}
+
+		bool  tryOpenRessource(Location &location , std::string &path, Client &client)
+		{
+			struct stat s;
+			if( stat(path.c_str(),&s) == 0 )
+			{
+				if( s.st_mode & S_IFDIR )
+				{
+					//it's a directory
+					if (path == location.getRoute())
+					{
+						// try open indexes file
+						
+					}
+					
+				}
+				else if( s.st_mode & S_IFREG )
+				{
+					//it's a file
+				}
+				else
+				{
+					//something else
+				}
+			}
+			else
+			{
+				//error
+				return (false);
+			}
+		}
+
 		bool sendHeaderResponse(Client &client)
 		{
+			// Location &bestLocationMatched = getBestMatchedLocation(_serverConfigs.getLocations(), client.path);
+			// std::string path = getPathRessource(bestLocationMatched ,client.path);
+			
 			printf("serve_resource %s %s\n",client.get_address(), client.path);
 
 			if (strcmp(client.path, "/") == 0) client.path = "/index.html";
@@ -144,7 +215,6 @@ class Server
 
 			std::cout << "path = " << full_path << std::endl;
 			if (!client.fp) {
-				std::cout << "hereee\n";
 				send_404(client);
 				return (false);;
 			}
@@ -181,29 +251,30 @@ class Server
 			char buffer[BUFFER_SIZE + 1];
 			memset(buffer, 0, BUFFER_SIZE);
 			int r = fread(buffer, 1, BUFFER_SIZE, client.fp);
-			if (!r)
+			if (!r || send(client.socket, buffer, r, 0) == -1)
 			{
 				fclose(client.fp);
 				client.fp = nullptr;
 			}
-			send(client.socket, buffer, r, 0);
 		}
 
-		void addClient()
+		void addClient(SOCKET &maxSocketSoFar, fd_set &reads, fd_set &writes)
 		{
 			Client newClient;
 			newClient.socket = accept(_serverSocket, (struct sockaddr *)&(newClient.address), &newClient.address_length);
 			 if (!ISVALIDSOCKET(newClient.socket)) {
                 fprintf(stderr, "accept() failed. (%d)\n",
                         GETSOCKETERRNO());
-                exit (1);
+				return ;
             }
-
 
             printf("New connection from %s.\n",
                     newClient.get_address());
 			_clients.AddClient(newClient);
-			_maxSocketSoFar = std::max(_maxSocketSoFar, newClient.socket);
+			FD_SET(newClient.socket, &reads);
+			FD_SET(newClient.socket, &writes);
+			maxSocketSoFar = std::max(_maxSocketSoFar, newClient.socket);
+			std::cout << "client added \n";
 		}
 
 		void send_400(Client &client) {
@@ -222,84 +293,84 @@ class Server
 			_clients.dropClient(client.socket);
 		}
 
-		void handleRequest()
-		{
-			fd_set writes, reads;			
-			std::pair <fd_set, fd_set> p = wait_on_clients();
-			reads = p.first;
-			writes = p.second;
-			if (FD_ISSET(_serverSocket, &reads))
-				addClient();
-			for (int  i = 0; i < _clients.getNumberClient(); i++)
-			{
-				if (FD_ISSET(_clients[i].socket, &reads))
-				{
-					if (_clients[i].received == MAX_REQUEST_SIZE)
-					{
-						send_400(_clients[i]);
-						i--;
-						continue;
-					}
-					int sz = recv(_clients[i].socket, _clients[i].request + _clients[i].received,MAX_REQUEST_SIZE -  _clients[i].received, 0);
-					if (sz < 1)
-					{
-						printf("Unexpected disconnect from %s.\n",
-						_clients[i].get_address());
-						_clients.dropClient(_clients[i].socket);
-						i--;
-						continue;
-					}
-					_clients[i].received += sz;
-					_clients[i].request[_clients[i].received] = '\0';
-					char *request = strstr(_clients[i].request, "\r\n\r\n");
-                    if (request) { //if request is done
-                        *request = 0;
-                        if (strncmp("GET /", _clients[i].request, 5))
-						{
-                            send_400(_clients[i]);
-							i--;
-							continue;
-                        }
-						else 
-						{
-                            char *path = _clients[i].request + 4;
-                            char *end_path = strstr(path, " ");
-                            if (!end_path) 
-							{
-                                send_400(_clients[i]);
-								i--;
-								continue;
-                            } 
-							else 
-							{
-                                *end_path = 0;
-								_clients[i].path = path;
-                            }
-                        }
-                    }
-				}
-				if (FD_ISSET(_clients[i].socket, &writes) && _clients[i].path)
-				{
-					if (_clients[i].fp == nullptr)
-					{
-						if (!sendHeaderResponse(_clients[i]))
-						{
-							std::cout << "aaa\n";
-							i--;
-							continue;
-						}
-					}
-					serve_resource(_clients[i]);
-					if (_clients[i].fp == nullptr)
-					{
-						_clients.dropClient(_clients[i].socket);
-						i--;
-					}
-				}
-			}	
-		}
+		// void handleRequest()
+		// {
+		// 	fd_set writes, reads;			
+		// 	std::pair <fd_set, fd_set> p = wait_on_clients();
+		// 	reads = p.first;
+		// 	writes = p.second;
+		// 	if (FD_ISSET(_serverSocket, &reads))
+		// 		addClient();
+		// 	for (int  i = 0; i < _clients.getNumberClient(); i++)
+		// 	{
+		// 		if (FD_ISSET(_clients[i].socket, &reads))
+		// 		{
+		// 			if (_clients[i].received == MAX_REQUEST_SIZE)
+		// 			{
+		// 				send_400(_clients[i]);
+		// 				i--;
+		// 				continue;
+		// 			}
+		// 			int sz = recv(_clients[i].socket, _clients[i].request + _clients[i].received,MAX_REQUEST_SIZE -  _clients[i].received, 0);
+		// 			if (sz < 1)
+		// 			{
+		// 				printf("Unexpected disconnect from %s.\n",
+		// 				_clients[i].get_address());
+		// 				_clients.dropClient(_clients[i].socket);
+		// 				i--;
+		// 				continue;
+		// 			}
+		// 			_clients[i].received += sz;
+		// 			_clients[i].request[_clients[i].received] = '\0';
+		// 			char *request = strstr(_clients[i].request, "\r\n\r\n");
+        //             if (request) { //if request is done
+        //                 *request = 0;
+        //                 if (strncmp("GET /", _clients[i].request, 5))
+		// 				{
+        //                     send_400(_clients[i]);
+		// 					i--;
+		// 					continue;
+        //                 }
+		// 				else 
+		// 				{
+        //                     char *path = _clients[i].request + 4;
+        //                     char *end_path = strstr(path, " ");
+        //                     if (!end_path) 
+		// 					{
+        //                         send_400(_clients[i]);
+		// 						i--;
+		// 						continue;
+        //                     } 
+		// 					else 
+		// 					{
+        //                         *end_path = 0;
+		// 						_clients[i].path = path;
+        //                     }
+        //                 }
+        //             }
+		// 		}
+		// 		if (FD_ISSET(_clients[i].socket, &writes) && _clients[i].path)
+		// 		{
+		// 			if (_clients[i].fp == nullptr)
+		// 			{
+		// 				if (!sendHeaderResponse(_clients[i]))
+		// 				{
+		// 					std::cout << "aaa\n";
+		// 					i--;
+		// 					continue;
+		// 				}
+		// 			}
+		// 			serve_resource(_clients[i]);
+		// 			if (_clients[i].fp == nullptr)
+		// 			{
+		// 				_clients.dropClient(_clients[i].socket);
+		// 				i--;
+		// 			}
+		// 		}
+		// 	}	
+		// }
 
-		void closeServer()
+		void closeHost()
 		{
 			printf("\nClosing socket...\n");
 			CLOSESOCKET(_serverSocket);

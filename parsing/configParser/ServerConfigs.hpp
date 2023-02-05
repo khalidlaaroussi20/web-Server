@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   serverConfigs.hpp                                  :+:      :+:    :+:   */
+/*   ServerConfigs.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:17:55 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/03 18:47:49 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/05 17:49:35 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,28 @@ class ServerConfigs
 	public :
 		ServerConfigs(){
 			_locations = std::vector <Location>();
+			_locations.push_back(getDefaultLocation());
 			_serv = "80";
 		};
+
+		std::vector <std::string> getDefaultAllowedMethods()
+		{
+			std::vector <std::string> defaultAllowedMethods;
+			defaultAllowedMethods.push_back("GET");
+			defaultAllowedMethods.push_back("POST");
+			defaultAllowedMethods.push_back("DELETE");
+			return (defaultAllowedMethods);
+		}
+
+		Location getDefaultLocation()
+		{
+			Location defaultLocation = Location();
+			defaultLocation.setRoute("/");
+			defaultLocation.setAllowMethods(getDefaultAllowedMethods());
+			defaultLocation.setRoot("public");
+			//defaultLocation.setIndexes({"index.html"});
+			return (defaultLocation);
+		}
 		
 		//getters
 		std::string &getListen()

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/04 11:34:09 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/05 16:37:27 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,8 @@
 #define OPEN_BRACKET "{"
 #define CLOSE_BRACKET "}"
 #define COMMENTAIRE "#"
+
+#define ServerMap std::map<std::string, Server >
 
 
 class ConfigParser
@@ -112,7 +114,7 @@ class ConfigParser
 		void pErrorParsing(const char *msg) const
 		{
 			std::cerr << msg << std::endl;
-			exit (FAILURE);
+			 (FAILURE);
 		}
 
 		bool isInsideServer(std::stack <std::string> &bracketStack)
@@ -237,52 +239,54 @@ class ConfigParser
 			}
 		}
 
-		void PrintServers(std::vector <Server> &servers)
-		{
-			for (int i = 0; i < servers.size(); i++)
-			{
-				std::cout << "******************************************\n\n";
-				ServerConfigs &serverConfigs = servers[i].getServerConfigs();
-				std::map<int, std::string > & errorPages = serverConfigs.getErrorPages();
-				std::vector <Location> &locations = serverConfigs.getLocations();
-				std::cout << "listen = " << serverConfigs.getListen() << std::endl;
-				std::cout << "host = " << serverConfigs.getHost() << " serv = " << serverConfigs.getServ() << std::endl;
-				std::cout << "server_name = " << serverConfigs.getServerName() << std::endl;
-				std::cout << "maxClientBody size  = " << serverConfigs.getMaxClientBodySize() << std::endl;
-				for (auto xs : errorPages)
-					std::cout << "errorCode = " << xs.first << " path = " << xs.second << std::endl;
-				for (int j = 0; j < locations.size(); j++)
-				{
-					std::cout << "Location : " << locations[j].getRoute() << std::endl;
-					std::map <std::string, bool> &methods = locations[j].getAllowMethods();
-					std::cout << "allowMethods = ";
-					for (auto xs : methods)
-						std::cout << xs.first << " ";
-					std::cout << "\nredirection  = " << locations[j].getRedirect() << std::endl;
-					std::cout << "autoIndex  = " << locations[j].getAutoIndex() << std::endl;
-					std::cout << "root  = " << locations[j].getRoot() << std::endl;
-					std::cout << "index = ";
-					std::vector <std::string > &indexex = locations[j].getIndexes();
-					for (int k = 0; k < indexex.size(); k++)
-						std::cout << indexex[k] << " ";
-					std::cout << "\nupload pass  = " << locations[j].getUploadPass() << std::endl;
-					std::vector < std::pair <Language, std::string > > &cgis = locations[j].getCgis();
-					std::cout << "cgis = \n";
-					for (int k = 0; k < cgis.size(); k++)
-						std::cout << cgis[k].first << " " << cgis[k].second << std::endl;
-					std::cout << "\n\n";
-				}
+		// void PrintServers(std::map<std::string, ServerMap >  &servers)
+		// {
+		// 	for (auto xs : servers)
+		// 	{
+		// 		for (auto a : xs.second)
+		// 		{
+					
+		// 			std::cout << "******************************************\n\n";
+		// 			ServerConfigs &serverConfigs = a.second.getServerConfigs();
+		// 			std::map<int, std::string > & errorPages = serverConfigs.getErrorPages();
+		// 			std::vector <Location> &locations = serverConfigs.getLocations();
+		// 			std::cout << "listen = " << serverConfigs.getListen() << std::endl;
+		// 			std::cout << "host = " << serverConfigs.getHost() << " serv = " << serverConfigs.getServ() << std::endl;
+		// 			std::cout << "server_name = " << serverConfigs.getServerName() << std::endl;
+		// 			std::cout << "maxClientBody size  = " << serverConfigs.getMaxClientBodySize() << std::endl;
+		// 			for (auto xs : errorPages)
+		// 				std::cout << "errorCode = " << xs.first << " path = " << xs.second << std::endl;
+		// 			for (int j = 0; j < locations.size(); j++)
+		// 			{
+		// 				std::cout << "Location : " << locations[j].getRoute() << std::endl;
+		// 				std::map <std::string, bool> &methods = locations[j].getAllowMethods();
+		// 				std::cout << "allowMethods = ";
+		// 				for (auto xs : methods)
+		// 					std::cout << xs.first << " ";
+		// 				std::cout << "\nredirection  = " << locations[j].getRedirect() << std::endl;
+		// 				std::cout << "autoIndex  = " << locations[j].getAutoIndex() << std::endl;
+		// 				std::cout << "root  = " << locations[j].getRoot() << std::endl;
+		// 				std::cout << "index = ";
+		// 				std::vector <std::string > &indexex = locations[j].getIndexes();
+		// 				for (int k = 0; k < indexex.size(); k++)
+		// 					std::cout << indexex[k] << " ";
+		// 				std::cout << "\nupload pass  = " << locations[j].getUploadPass() << std::endl;
+		// 				std::vector < std::pair <Language, std::string > > &cgis = locations[j].getCgis();
+		// 				std::cout << "cgis = \n";
+		// 				for (int k = 0; k < cgis.size(); k++)
+		// 					std::cout << cgis[k].first << " " << cgis[k].second << std::endl;
+		// 				std::cout << "\n\n";
+		// 			}
 
-				std::cout << "******************************************\n\n";
-				
-			}
-		}
+		// 			std::cout << "******************************************\n\n";	
+		// 			}
+		// 	}
+		// }
 
-		void parseServerConfig()
+		std::map<std::string, ServerMap > parseServerConfig()
 		{
 			std::stack <std::string> bracketStack;
-			std::vector <Server> servers;
-			std::map<std::string, map <std::string, Server > > servers;
+			std::map<std::string, ServerMap > servers;
 			Server server;
 			while (_currPos < _serverConfig.length() - 1)
 			{
@@ -296,8 +300,7 @@ class ConfigParser
 						if (nextToken != OPEN_BRACKET)
 							pErrorParsing("Parsing Error");
 						bracketStack.push(OPEN_BRACKET);
-						servers.push_back(Server());
-						//std::cout << "server\n{"  << std::endl;
+						server = Server();
 					}
 					else
 						pErrorParsing("Parsing Error");
@@ -311,9 +314,25 @@ class ConfigParser
 						bracketStack.pop();
 						if (bracketStack.empty())
 						{
-							//add server
+							//add server if its valid
+							ServerConfigs &currServerConfigs = server.getServerConfigs();
+							if (!currServerConfigs.isValidConfigs())
+								pErrorParsing("Server Configuration Not Valid!");
+							if (servers.find(currServerConfigs.getHost()+ currServerConfigs.getServ()) == servers.end())
+							{
+								ServerMap serverMap;
+								serverMap[currServerConfigs.getServerName()] = server;
+								servers[currServerConfigs.getHost()+ currServerConfigs.getServ()] = serverMap;
+							}
+							else
+							{
+								ServerMap &serverMap = servers[currServerConfigs.getHost()+ currServerConfigs.getServ()];
+								if (serverMap.find(currServerConfigs.getServerName()) != serverMap.end())
+									pErrorParsing("this Server Name already exist in this listen!!");
+								serverMap[currServerConfigs.getServerName()] = server;
+								servers[currServerConfigs.getHost()+ currServerConfigs.getServ()] = serverMap;
+							}
 						}
-						//std::cout << "}\n";
 						continue;
 					}
 					std::map <std::string, int > supportedConfigs = StaticConfig::SERVER_CONFIGS[bracketStack.size() - 1];
@@ -321,25 +340,21 @@ class ConfigParser
 					std::vector <std::string> values = getValuesCurrToken();
 					if (values.size() == 0 || (currConfig.second != 0 &&  values.size() != currConfig.second ))
 						pErrorParsing("values Config not Valid !!");
-					// std::cout << nextToken << " : ";
-					// for (int i = 0; i < values.size(); i++)
-					// 	std::cout << values[i] << " -- ";
-					//std::cout << std::endl;
 					if (nextToken == "location")
 					{
 						if (getNextToken() != OPEN_BRACKET || bracketStack.size() >= 2)
 							pErrorParsing("Parsing Error");
 						bracketStack.push(OPEN_BRACKET);
-						servers[servers.size() - 1].getServerConfigs().getLocations().push_back(Location());
-						//std::cout << nextToken << std::endl;
+						server.getServerConfigs().getLocations().push_back(Location());
 					}
-					settingConfigsFactory(servers[servers.size() - 1].getServerConfigs(), isInsideServer(bracketStack), \
+					settingConfigsFactory(server.getServerConfigs(), isInsideServer(bracketStack), \
 											nextToken, values);
 				}
 			}
 			if (bracketStack.size())
 				pErrorParsing("Bracket Error");
-			PrintServers(servers);
+			//PrintServers(servers);
+			return (servers);
 		}
 };
 
