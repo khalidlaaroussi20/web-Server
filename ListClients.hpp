@@ -31,14 +31,15 @@ class ListClients
 			return (clientIdx != CLIENT_NOT_FOUND);
 		}
 
-		void dropClient(SOCKET clientSocket)
+		void dropClient(int &clientIdx, fd_set &reads, fd_set &writes)
 		{
-			int clientIdx = getClient(clientSocket);
-			if (clientIdx != CLIENT_NOT_FOUND)
-			{
-				CLOSESOCKET(_clients[clientIdx].socket);
-				_clients.erase(_clients.begin() + clientIdx);
-			}
+			SOCKET clientSocket = _clients[clientIdx].socket;
+			FD_CLR(clientSocket, &reads);
+			FD_CLR(clientSocket, &writes);
+			std::cout << "closed = " << clientSocket << std::endl;
+			CLOSESOCKET(clientSocket);
+			_clients.erase(_clients.begin() + clientIdx);
+			clientIdx--;
 		}
 
 		Client &operator [](int i)

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 16:34:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/05 16:00:39 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/06 19:04:50 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,8 @@ int main(int ac , char **av)
 	ConfigParser parser = ConfigParser(readFile(av[1]));
 	std::map<std::string, ServerMap > servers;
 	SOCKET maxSocketSoFar = -1;
-	fd_set reads , writes, readyReads, readWrites;
-	FD_ZERO(&reads), FD_ZERO(&writes), FD_ZERO(&readWrites), FD_ZERO(&readyReads);
+	fd_set reads , writes, readyReads, readyWrites;
+	FD_ZERO(&reads), FD_ZERO(&writes), FD_ZERO(&readyWrites), FD_ZERO(&readyReads);
 	servers = parser.parseServerConfig();
 	for (auto &xs : servers)
 	{
@@ -88,8 +88,8 @@ int main(int ac , char **av)
 		try
 		{
 			readyReads = reads;
-			readWrites = writes;
-			if (select(maxSocketSoFar + 1, &readyReads, &readWrites, 0, 0) < 0) {
+			readyWrites = writes;
+			if (select(maxSocketSoFar + 1, &readyReads, &readyWrites, 0, 0) < 0) {
 				fprintf(stderr, "select() failed. (%d)\n", GETSOCKETERRNO());
 				break;
 			}
@@ -101,83 +101,75 @@ int main(int ac , char **av)
 					ListClients &clients = server.getClients();
 					if (FD_ISSET(server.getSocket(), &readyReads))
 						server.addClient(maxSocketSoFar, reads, writes);
-					
-					for (int  i = 0; i < clients.getNumberClient(); i++)
+					for (int i = 0; i < clients.getNumberClient(); i++)
 					{
-						SOCKET clientSocket = clients[i].socket;
-						if (FD_ISSET(clientSocket, &readyReads))
+						int sizeClient = clients.getNumberClient();
+						if (FD_ISSET(clients[i].socket, &readyReads))
 						{
 							if (clients[i].received == MAX_REQUEST_SIZE)
 							{
-								server.send_400(clients[i]);
-								FD_CLR(clientSocket, &reads);
-								FD_CLR(clientSocket, &writes);
-								i--;
-								continue;
+								printf("400 %d.\n",
+								clients[i].socket );
+								clients.dropClient(i, reads, writes);
+								//server.send_400(clients[i], reads, writes, i);
 							}
-							int sz = recv(clientSocket, clients[i].request + clients[i].received,MAX_REQUEST_SIZE -  clients[i].received, 0);
-							if (sz < 1)
+							else
 							{
-								printf("Unexpected disconnect from %s.\n",
-								clients[i].get_address());
-								clients.dropClient(clientSocket);
-								FD_CLR(clientSocket, &reads);
-								FD_CLR(clientSocket, &writes);
-								i--;
-								continue;
-							}
-							clients[i].received += sz;
-							clients[i].request[clients[i].received] = '\0';
-							char *request = strstr(clients[i].request, "\r\n\r\n");
-							if (request) { //if request is done
-								*request = 0;
-								if (strncmp("GET /", clients[i].request, 5))
+								int sz = recv(clients[i].socket, clients[i].request + clients[i].received,MAX_REQUEST_SIZE -  clients[i].received, 0);
+								if (sz < 1)
 								{
-									server.send_400(clients[i]);
-									FD_CLR(clientSocket, &reads);
-									FD_CLR(clientSocket, &writes);
-									i--;
-									continue;
+									printf("Unexpected disconnect from %d.\n",
+									clients[i].socket );
+									clients.dropClient(i, reads, writes);
 								}
-								else 
+								else
 								{
-									char *path = clients[i].request + 4;
-									char *end_path = strstr(path, " ");
-									if (!end_path) 
-									{
-										server.send_400(clients[i]);
-										FD_CLR(clientSocket, &reads);
-										FD_CLR(clientSocket, &writes);
-										i--;
-										continue;
-									} 
-									else 
-									{
-										*end_path = 0;
-										clients[i].path = path;
+									clients[i].received += sz;
+									clients[i].request[clients[i].received] = '\0';
+									char *request = strstr(clients[i].request, "\r\n\r\n");
+									if (request) 
+									{ //if request is done
+										*request = 0;
+										if (strncmp("GET /", clients[i].request, 5))
+										{
+											printf("400 %d.\n",
+											clients[i].socket );
+											clients.dropClient(i, reads, writes);
+											//server.send_400(clients[i], reads, writes, i);
+										}
+										else 
+										{
+											char *path = clients[i].request + 4;
+											char *end_path = strstr(path, " ");
+											if (!end_path) 
+											{
+												printf("400 %d.\n",
+												clients[i].socket );
+												clients.dropClient(i, reads, writes);
+												//server.send_400(clients[i], reads, writes, i);
+											} 
+											else 
+											{
+												*end_path = 0;
+												clients[i].path = path;
+											}
+										}
 									}
 								}
 							}
 						}
-						if (FD_ISSET(clientSocket, &readWrites) && clients[i].path)
+						if (i < 0)
+							std::cout << "i = " << i << std::endl;
+						if (i >= 0  && FD_ISSET(clients[i].socket, &readyWrites) && clients[i].path)
 						{
 							if (clients[i].fp == nullptr)
 							{
-								if (!server.sendHeaderResponse(clients[i]))
-								{
-									FD_CLR(clientSocket, &reads);
-									FD_CLR(clientSocket, &writes);
-									i--;
-									continue;
-								}
+								server.sendHeaderResponse(clients[i], reads, writes, i);
 							}
 							server.serve_resource(clients[i]);
 							if (clients[i].fp == nullptr)
 							{
-								clients.dropClient(clientSocket);
-								FD_CLR(clientSocket, &reads);
-								FD_CLR(clientSocket, &writes);
-								i--;
+								clients.dropClient(i, reads, writes);
 							}
 						}
 					}	
@@ -186,7 +178,7 @@ int main(int ac , char **av)
 		}
 		catch (std::exception &e)
 		{
-			std::cout << "error happend" << std::endl;
+			std::cout << "error happend " <<  e.what() << std::endl;
 			break;
 		}
 	}

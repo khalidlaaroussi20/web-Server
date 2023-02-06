@@ -6,12 +6,16 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:17:55 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/05 17:49:35 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/06 18:49:21 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef SERVER_CONFIGS_HPP
 #define SERVER_CONFIGS_HPP
+
+
+#define PATH_404 "./errors/404.html"
+#define PATH_400 "./errors/400.html"
 
 
 #include "Location.hpp"
@@ -42,13 +46,21 @@ class ServerConfigs
 			return (defaultAllowedMethods);
 		}
 
+
+		void setDefaultErrorPages()
+		{
+			_errorPages[404] = PATH_404;
+			_errorPages[400] = PATH_400;
+		}
 		Location getDefaultLocation()
 		{
 			Location defaultLocation = Location();
 			defaultLocation.setRoute("/");
 			defaultLocation.setAllowMethods(getDefaultAllowedMethods());
 			defaultLocation.setRoot("public");
-			//defaultLocation.setIndexes({"index.html"});
+			std::vector <std::string > indexes;
+			indexes.push_back("index.html");
+			defaultLocation.setIndexes(indexes);
 			return (defaultLocation);
 		}
 		
@@ -78,9 +90,14 @@ class ServerConfigs
 			return (_serverName);
 		}
 
-		std::map<int , std::string> &getErrorPages()
+		std::map<int , std::string> &AllgetErrorPages()
 		{
 			return (_errorPages);
+		}
+
+		std::string &getErrorPage(int errorCode)
+		{
+			return (_errorPages[errorCode]);
 		}
 
 		std::vector <Location> &getLocations()

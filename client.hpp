@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:06:20 by klaarous          #+#    #+#             */
-/*   Updated: 2023/01/29 15:56:58 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/06 18:31:26 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ class Client
 		char *path;
 		FILE *fp;
 		int received;
+		int responseCode;
 	
 	Client()
 	{
@@ -35,6 +36,7 @@ class Client
 		socket = -1;
 		path  = nullptr;
 		fp = nullptr;
+		responseCode = 200;
 	}
 	Client(SOCKET socket)
 	{
@@ -42,7 +44,8 @@ class Client
 		address_length = sizeof(address);
 		path  = nullptr;
 		fp = nullptr;
-		this->socket = socket;	
+		this->socket = socket;
+		responseCode = 200;
 	}
 
 	const char *get_address() //return address client as string

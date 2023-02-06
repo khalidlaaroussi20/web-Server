@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:03:21 by klaarous          #+#    #+#             */
-/*   Updated: 2023/01/28 15:07:47 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/05 20:11:40 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ SOCKET create_socket(const char* host, const char *port) {
     freeaddrinfo(bind_address);
 
     printf("Listening...\n");
-    if (listen(socket_listen, 10) < 0) {
+    if (listen(socket_listen, 10000) < 0) {
         fprintf(stderr, "listen() failed. (%d)\n", GETSOCKETERRNO());
         exit(1);
     }
