@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:06:20 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/06 18:31:26 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/07 15:59:48 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define CLIENT_HPP
 
 #include "includes.hpp"
+#include "StatusCode.hpp"
 
 
 class Client
@@ -26,8 +27,9 @@ class Client
 		char request[MAX_REQUEST_SIZE + 1];
 		char *path;
 		FILE *fp;
-		int received;
-		int responseCode;
+		int 	received;
+		int 	responseCode;
+		bool	sendError;
 	
 	Client()
 	{
@@ -36,7 +38,8 @@ class Client
 		socket = -1;
 		path  = nullptr;
 		fp = nullptr;
-		responseCode = 200;
+		responseCode = OK;
+		sendError = false;
 	}
 	Client(SOCKET socket)
 	{
@@ -45,7 +48,8 @@ class Client
 		path  = nullptr;
 		fp = nullptr;
 		this->socket = socket;
-		responseCode = 200;
+		responseCode = OK;
+		sendError = false;
 	}
 
 	const char *get_address() //return address client as string

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/07 11:56:36 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/07 14:24:05 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,12 @@ class Server
 		{
 			return (_serverSocket);
 		}
+
+		void setSocket(SOCKET socket) 
+		{
+			_serverSocket = socket;
+		}
+
 
 		ListClients &getClients()
 		{

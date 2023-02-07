@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/05 16:37:27 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/07 16:06:25 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,17 @@ class ConfigParser
 		{
 			_currPos = 0;
 		};
+		
 		ConfigParser(std::string _serverConfig)
 		{
 			this ->_serverConfig = _serverConfig;
 			_currPos = 0;
 			processComments();
+		}
+
+		bool	isDoneParsing() const
+		{
+			return (_currPos >= _serverConfig.length());
 		}
 		
 		void processComments()
@@ -114,7 +120,7 @@ class ConfigParser
 		void pErrorParsing(const char *msg) const
 		{
 			std::cerr << msg << std::endl;
-			 (FAILURE);
+			exit (FAILURE);
 		}
 
 		bool isInsideServer(std::stack <std::string> &bracketStack)
