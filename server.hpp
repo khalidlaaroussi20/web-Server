@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/07 14:24:05 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/07 16:09:26 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,11 +223,11 @@ class Server
 		}
 
 
-		void sendHeaderResponse(Client &client, fd_set &reads, fd_set &writes, int &clientIdx, bool isError = false)
+		void sendHeaderResponse(Client &client, fd_set &reads, fd_set &writes, int &clientIdx)
 		{
 			std::string path = client.path;
 			
-			if (!isError)
+			if (!client.sendError)
 				tryOpenRessource(path, client);
 			if (client.responseCode != OK)
 				setPathError(client, path);
