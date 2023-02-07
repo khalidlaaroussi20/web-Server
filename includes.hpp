@@ -21,6 +21,7 @@
 #define CLIENT_NOT_FOUND -1
 #define FAILURE 0
 #define SUCCESS 1
+#define ERROR true
 
 #define INFINI 0
 

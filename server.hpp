@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/06 19:03:51 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/07 11:56:36 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 
 #include "ListClients.hpp"
 #include "parsing/configParser/ServerConfigs.hpp"
+
+#include "StatusCode.hpp"
 
 
 
@@ -115,23 +117,6 @@ class Server
 			}
 		}
 
-		// return pair <fd_set reads , fd_set writes>
-		std::pair<fd_set, fd_set> wait_on_clients() 
-		{
-			std::pair<fd_set, fd_set> p;
-			FD_ZERO(&p.first);
-			FD_ZERO(&p.second);
-			FD_SET(_serverSocket, &p.first);
-			
-			addClientSocket(p);
-
-			// if (select(_maxSocketSoFar + 1, &p.first, &p.second, 0, 0) < 0) {
-			// 	fprintf(stderr, "select() failed. (%d)\n", GETSOCKETERRNO());
-			// 	exit(1);
-			// }
-			return p;
-		}
-
 		Location &getBestMatchedLocation(std::vector <Location> &locations, std::string path)
 		{
 			int idxBestLocation = 0;
@@ -147,7 +132,7 @@ class Server
 					}
 				}
 			}
-			std::cout << "best InDEX = " << idxBestLocation << std::endl;
+			//std::cout << "best InDEX = " << idxBestLocation << std::endl;
 			return (locations[idxBestLocation]);
 		}
 		
@@ -157,120 +142,115 @@ class Server
 			if (currPath[currPath.length() - 1] != '/')
 				currPath += "/";
 			currPath += path.substr(bestLocationMatched.getRoute().length(), path.length());
-			std::cout << "currPath1 = " << currPath << std::endl;
+			//std::cout << "currPath1 = " << currPath << std::endl;
 			return (currPath); 
 		}
 
-		bool  tryOpenRessource(Location &location , std::string &path, Client &client)
+		void  tryOpenRessource(std::string &path, Client &client)
 		{
+			Location &bestLocationMatched = getBestMatchedLocation(_serverConfigs.getLocations(), client.path);
+			path = getPathRessource(bestLocationMatched ,client.path);
+			if (path.find("..") != std::string::npos)
+			{
+				client.responseCode = 400;
+				return ;			
+			}
 			struct stat s;
 			if( stat(path.c_str(),&s) == 0 )
 			{
 				if( s.st_mode & S_IFDIR )
 				{
-					std::cout << "is Directory\n";
+					//std::cout << "is Directory\n";
 					//it's a directory
-					std::vector <std::string> &indexes =  location.getIndexes();
+					std::vector <std::string> &indexes =  bestLocationMatched.getIndexes();
 					for (int i = 0; i < indexes.size();i++)
 					{
 						std::string fullPath = path + indexes[i];
-						std::cout << "fullPath = " << fullPath << std::endl;
+						//std::cout << "fullPath = " << fullPath << std::endl;
 						if (fullPath.length() < 100)
 						{
 							client.fp = fopen(fullPath.c_str(), "rb");
 							if (client.fp)
 							{
 								path = fullPath.c_str();
-								return (true);
+								break;
 							}
 						}
 					}
-					return false;
 					
 				}
 				else if( s.st_mode & S_IFREG )
 				{
 					//it's a file
 					client.fp = fopen(path.c_str(), "rb");
-					return (client.fp);
 				}
 			}
-			return (false);
+			if (client.fp == nullptr)
+				client.responseCode = NOT_FOUND;
 		}
-
-		bool sendHeaderResponse(Client &client, fd_set &reads, fd_set &writes, int &clientIdx)
+		
+		std::string  getHeaderResponse(Client &client, std::string &path)
 		{
-			std::cout << "path == " << client.path << std::endl;
-			Location &bestLocationMatched = getBestMatchedLocation(_serverConfigs.getLocations(), client.path);
-			std::cout << "bestroute = " << bestLocationMatched.getRoute() << std::endl;
-			std::cout << "bestroot = " << bestLocationMatched.getRoot() << std::endl;
-			std::vector<std::string> indexes = bestLocationMatched.getIndexes();
-			for (int i = 0; i < indexes.size();i++)
-			{
-				std::cout << " " << indexes[i];
-			}
-			std::cout << std::endl;
-			std::string path = getPathRessource(bestLocationMatched ,client.path);
-			std::cout << "fullPath = " << path << std::endl;
-			if (path.find("..") != std::string::npos)
-			{
-				send_400( client, reads, writes, clientIdx);
-				return (false);
-			}
-
-			if (tryOpenRessource(bestLocationMatched, path, client) == false)
-			{
-				send_404(client, reads, writes, clientIdx);
-				return (false);;
-			}
-			
-			printf("serve_resource %s %s\n",client.get_address(), client.path);
-
-
-			std::cout << "path = " << path << std::endl;
+			std::string headerRespone = "HTTP/1.1 " + std::to_string(client.responseCode);
 			fseek(client.fp, 0L, SEEK_END);
 			size_t fileSize = ftell(client.fp);
 			rewind(client.fp);
-
 			
 			const char *contentType = get_content_type(path.c_str());
-			char buffer[BUFFER_SIZE + 2];
-			memset(buffer, 0, BUFFER_SIZE + 1);
+			if (client.responseCode == 400)
+				headerRespone += "  Bad Request ";
+			else if (client.responseCode == 404)
+				headerRespone += "  Not Found ";
+			else
+				headerRespone += " OK ";
+			headerRespone += "\r\nConnection: close\r\nContent-Length: " + std::to_string(fileSize) +  "\r\nContent-Type: " + contentType + "\r\n\r\n";
+	
+			return (headerRespone);
+		}
+		
+		void setPathError(Client &client, std::string &path)
+		{
+			std::cout << "path before = " << path << " resCode = " << client.responseCode << std::endl;
+			path = getServerConfigs().getErrorPage(client.responseCode);
+			std::cout << "path Error = " << path << std::endl;
+			client.fp = fopen(path.c_str(), "rb");
+		}
+
+
+		void sendHeaderResponse(Client &client, fd_set &reads, fd_set &writes, int &clientIdx, bool isError = false)
+		{
+			std::string path = client.path;
 			
-			sprintf(buffer, "HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: %lu\r\nContent-Type: %s\r\n\r\n", fileSize, contentType);
-			std::cout << "before send 3 to " << client.socket << std::endl;
-			if (send(client.socket, buffer, strlen(buffer), 0)  == -1)
+			if (!isError)
+				tryOpenRessource(path, client);
+			if (client.responseCode != OK)
+				setPathError(client, path);
+			std::string responseHeader = getHeaderResponse(client, path);			
+			if (send(client.socket, responseHeader.c_str(), responseHeader.length(), 0)  == -1)
 			{
-				std::cout << "error3" << std::endl;
 				fclose(client.fp);
 				client.fp = nullptr;
 				_clients.dropClient(clientIdx, reads, writes);
-				return (false);
 			}
-			std::cout << "after send 3 to " << client.socket << std::endl;
-			return (true);
 		}
 
 		void serve_resource(Client &client) {
 			if (client.fp == nullptr)
 				return ;
-			char buffer[BUFFER_SIZE + 2];
+			char buffer[BUFFER_SIZE + 1];
 			memset(buffer, 0, BUFFER_SIZE + 1);
 			int r = fread(buffer, 1, BUFFER_SIZE, client.fp);
-			if (r <= 0 || send(client.socket, buffer, r + 1, 0) == -1)
+			if (r <= 0)
 			{
 				fclose(client.fp);
 				client.fp = nullptr;
 				return ;
 			}
-			std::cout << "before send 4 to " << client.socket << std::endl;
-			if (send(client.socket, buffer, r + 1, 0) == -1)
+			if (send(client.socket, buffer, r, 0) == -1)
 			{
-				std::cout << "error4 " << std::endl;
 				fclose(client.fp);
 				client.fp = nullptr;
 			}
-			std::cout << "after send 4 to " << client.socket << std::endl;
 		}
 
 		void addClient(SOCKET &maxSocketSoFar, fd_set &reads, fd_set &writes)
@@ -297,25 +277,15 @@ class Server
 			const char *c400 = "HTTP/1.1 400 Bad Request\r\n"
 				"Connection: close\r\n"
 				"Content-Length: 11\r\n\r\nBad Request";
-			std::cout << "before send 2" << std::endl;
-			if (send(client.socket, c400, strlen(c400), 0) == -1)
-			{
-				std::cout << "error 2" << std::endl;
-			}
-			std::cout << "after send 2" << std::endl;
+			send(client.socket, c400, strlen(c400), 0);
 			_clients.dropClient(clientIdx, reads, writes);
 		}
 		
 		void send_404(Client &client, fd_set &reads, fd_set &writes, int &clientIdx) {
 			 const char *c404 = "HTTP/1.1 404 Not Found\r\n"
-        "Connection: close\r\n"
-        "Content-Length: 9\r\n\r\nNot Found";
-			std::cout << "before send 1" << std::endl;
-			if (send(client.socket, c404, strlen(c404), 0) == -1)
-			{
-				std::cout << "error 3" << std::endl;
-			}
-			std::cout << "after send 1" << std::endl;
+        	"Connection: close\r\n"
+        	"Content-Length: 9\r\n\r\nNot Found";
+			send(client.socket, c404, strlen(c404), 0);
 			_clients.dropClient(clientIdx, reads, writes);
 		}
 

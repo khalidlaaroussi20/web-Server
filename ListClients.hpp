@@ -36,7 +36,6 @@ class ListClients
 			SOCKET clientSocket = _clients[clientIdx].socket;
 			FD_CLR(clientSocket, &reads);
 			FD_CLR(clientSocket, &writes);
-			std::cout << "closed = " << clientSocket << std::endl;
 			CLOSESOCKET(clientSocket);
 			_clients.erase(_clients.begin() + clientIdx);
 			clientIdx--;

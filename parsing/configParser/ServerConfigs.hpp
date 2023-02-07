@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:17:55 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/06 18:49:21 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/07 11:38:50 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 #define SERVER_CONFIGS_HPP
 
 
-#define PATH_404 "./errors/404.html"
-#define PATH_400 "./errors/400.html"
 
 
 #include "Location.hpp"
+#include "../../StaticErrorPages.hpp"
 
 class ServerConfigs
 {
@@ -34,6 +33,7 @@ class ServerConfigs
 		ServerConfigs(){
 			_locations = std::vector <Location>();
 			_locations.push_back(getDefaultLocation());
+			setDefaultErrorPages();
 			_serv = "80";
 		};
 
@@ -49,8 +49,7 @@ class ServerConfigs
 
 		void setDefaultErrorPages()
 		{
-			_errorPages[404] = PATH_404;
-			_errorPages[400] = PATH_400;
+			_errorPages = StaticErrorPages::ERROR_PAGES;
 		}
 		Location getDefaultLocation()
 		{
@@ -97,6 +96,9 @@ class ServerConfigs
 
 		std::string &getErrorPage(int errorCode)
 		{
+			std::cout << "here\n";
+			for (auto xs : _errorPages)
+				std::cout << xs.first << " " << xs.second << std::endl;
 			return (_errorPages[errorCode]);
 		}
 
@@ -175,7 +177,13 @@ class ServerConfigs
 
 		void addErrorPage(int errorCode, std::string path)
 		{
-			_errorPages[errorCode] = path;
+			std::ifstream file;
+			file.open(path);
+			if (file)
+			{
+				_errorPages[errorCode] = path;
+				file.close();
+			}
 		}
 		
 };

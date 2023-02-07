@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 16:34:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/06 19:04:50 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/07 10:48:08 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,10 +108,10 @@ int main(int ac , char **av)
 						{
 							if (clients[i].received == MAX_REQUEST_SIZE)
 							{
-								printf("400 %d.\n",
-								clients[i].socket );
-								clients.dropClient(i, reads, writes);
-								//server.send_400(clients[i], reads, writes, i);
+								// printf("400 %d.\n",
+								// clients[i].socket );
+								// clients.dropClient(i, reads, writes);
+								server.send_400(clients[i], reads, writes, i);
 							}
 							else
 							{
@@ -132,10 +132,10 @@ int main(int ac , char **av)
 										*request = 0;
 										if (strncmp("GET /", clients[i].request, 5))
 										{
-											printf("400 %d.\n",
-											clients[i].socket );
-											clients.dropClient(i, reads, writes);
-											//server.send_400(clients[i], reads, writes, i);
+											// printf("400 %d.\n",
+											// clients[i].socket );
+											// clients.dropClient(i, reads, writes);
+											server.send_400(clients[i], reads, writes, i);
 										}
 										else 
 										{
@@ -143,10 +143,10 @@ int main(int ac , char **av)
 											char *end_path = strstr(path, " ");
 											if (!end_path) 
 											{
-												printf("400 %d.\n",
-												clients[i].socket );
-												clients.dropClient(i, reads, writes);
-												//server.send_400(clients[i], reads, writes, i);
+												// printf("400 %d.\n",
+												// clients[i].socket );
+												// clients.dropClient(i, reads, writes);
+												server.send_400(clients[i], reads, writes, i);
 											} 
 											else 
 											{
