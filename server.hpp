@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/09 16:39:43 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/09 17:50:53 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 #include "includes.hpp"
 #include "static/ContentTypes.hpp"
-#include "parsing/configParser/HeaderParser.hpp"
 #include "ListClients.hpp"
 
 class Server

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/09 15:10:47 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/09 17:49:56 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,6 @@ void Client::factoryRequestHandlerSetter()
 	else
 	{
 		requestHandler = new GetRequest();
-		std::cout << "\n\nerror22 \n";
 		set_error_code(METHOD_NOT_ALLOWED);
 	}
 	
