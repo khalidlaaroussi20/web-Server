@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:17:55 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/07 11:38:50 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/09 16:00:37 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,9 +15,8 @@
 
 
 
-
 #include "Location.hpp"
-#include "../../StaticErrorPages.hpp"
+#include "../../static/StaticErrorPages.hpp"
 
 class ServerConfigs
 {
@@ -96,7 +95,6 @@ class ServerConfigs
 
 		std::string &getErrorPage(int errorCode)
 		{
-			std::cout << "here\n";
 			for (auto xs : _errorPages)
 				std::cout << xs.first << " " << xs.second << std::endl;
 			return (_errorPages[errorCode]);

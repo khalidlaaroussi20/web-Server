@@ -6,21 +6,20 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/07 16:06:25 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/09 12:23:35 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CONFIG_PARSER_HPP
 #define CONFIG_PARSER_HPP
 
-#include "../../includes.hpp"
-#include "StaticConfiguration.hpp"
-#include "Location.hpp"
 #include "../../server.hpp"
+#include "../../webserv.hpp"
 
 #define OPEN_BRACKET "{"
 #define CLOSE_BRACKET "}"
 #define COMMENTAIRE "#"
+
 
 #define ServerMap std::map<std::string, Server >
 
@@ -44,11 +43,6 @@ class ConfigParser
 			processComments();
 		}
 
-		bool	isDoneParsing() const
-		{
-			return (_currPos >= _serverConfig.length());
-		}
-		
 		void processComments()
 		{
 			int i = 0;

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 15:07:32 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/03 13:06:21 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/09 16:02:09 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 
 
-#include "../../includes.hpp"
+#include "../includes.hpp"
 #define SERVER_STATIC_CONFIG 0
 #define LOCATION_STATIC_CONFIG 1
 
@@ -49,8 +49,6 @@ struct StaticConfig
 		return v;
 	}
 };
-
-std::vector<std::map <std::string, int > > StaticConfig::SERVER_CONFIGS = StaticConfig::MakeServerConfigVector();
 
 
 
