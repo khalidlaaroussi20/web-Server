@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:17:55 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/09 16:00:37 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/10 15:27:03 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ class ServerConfigs
 
 		std::string &getErrorPage(int errorCode)
 		{
-			for (auto xs : _errorPages)
-				std::cout << xs.first << " " << xs.second << std::endl;
+			// for (auto xs : _errorPages)
+			// 	std::cout << xs.first << " " << xs.second << std::endl;
 			return (_errorPages[errorCode]);
 		}
 

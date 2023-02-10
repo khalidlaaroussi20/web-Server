@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 13:04:37 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/05 19:20:21 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/10 15:39:13 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 #define LOCATION_HPP
 
 #include "../../includes.hpp"
+#include "../../static/SupportedMethods.hpp"
 
-#define  Language std::string
+#define  Extention std::string
 
 
 class Location
@@ -28,7 +29,7 @@ class Location
 		std::string 										_root;
 		std::vector <std::string> 							_indexes;
 		std::string 										_uploadPass;
-		std::vector < std::pair <Language, std::string > > 	_cgis;
+		std::vector < std::pair <Extention, std::string > > _cgis;
 	public :
 		Location()
 		{
@@ -69,7 +70,7 @@ class Location
 			return (_uploadPass);
 		}
 
-		std::vector < std::pair <Language, std::string > >  &getCgis()
+		std::vector < std::pair <Extention, std::string > >  &getCgis()
 		{
 			return (_cgis);
 		}
@@ -85,7 +86,15 @@ class Location
 		{
 			_allowMethods.clear();
 			for (int i = 0; i < allowMethods.size(); i++)
-				_allowMethods[allowMethods[i]] = true;
+			{
+				if (SupportedMethods::isAllowedMethod(allowMethods[i]) == true)
+					_allowMethods[allowMethods[i]] = true;
+				else
+				{
+					std::cerr << "this Method : " << allowMethods[i] << " not Supported!!" << std::endl;
+					exit (FAILURE);
+				}
+			}
 		}
 
 		void setRedirect(std::string redirect)
@@ -112,7 +121,7 @@ class Location
 			_uploadPass = uploadPass;
 		}
 
-		void setCgis(std::vector < std::pair <Language, std::string > > cgis)
+		void setCgis(std::vector < std::pair <Extention, std::string > > cgis)
 		{
 			_cgis = cgis;
 		}
@@ -122,11 +131,16 @@ class Location
 			return  (!(_route.empty() || _root.empty() || _indexes.empty()));
 		}
 
-		void addcgi(Language lang, std::string path)
+		void addcgi(Extention lang, std::string path)
 		{
 			_cgis.push_back(std::make_pair(lang, path));	
 		}
 
+
+		bool isMethodAllowed(std::string &method)
+		{
+			return (_allowMethods.find(method) != _allowMethods.end());
+		}
 
 		bool isRouteMatch(std::string &path)
 		{

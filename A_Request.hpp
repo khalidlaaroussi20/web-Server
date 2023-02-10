@@ -25,13 +25,10 @@ class A_Request
 		std::string 											_method;
 		std::string												_httpVersion;
 		std::map<std::string , std::vector < std::string > >	_headers;
-		std::string												_request;
-		bool													_headerDone;
 		
 public:
 	A_Request()
 	{
-		_headerDone = false;
 	};
 
 	std::string &getPath() 
@@ -44,11 +41,11 @@ public:
 		return (_method);
 	}
 	
-	void parseRequestHeader(std::string request)
+	void parseRequestHeader(std::string &request)
 	{
 		//std::cout << request << std::endl;
 		HeaderParser parser(request);
-		std::cout << "request == " << request << std::endl;
+		//std::cout << "request == " << request << std::endl;
 		_method = parser.getNextToken();
 		_path = parser.getNextToken();
 		_httpVersion =  parser.getNextToken();
@@ -61,7 +58,7 @@ public:
 			std::string requestHeader = parser.getNextToken();
 			if (!requestHeader.empty())
 			{
-				 std::vector < std::string >  values = parser.getValuesCurrToken();
+				std::vector < std::string >  values = parser.getValuesCurrToken();
 				_headers[requestHeader] = values;
 				//std::cout  << requestHeader << " : " << value << std::endl;
 			}
@@ -72,11 +69,6 @@ public:
 	std::string &getHttpVersion()
 	{
 		return (_httpVersion);
-	}
-
-	bool isHeaderDone() const
-	{
-		return (_headerDone);
 	}
 
 	virtual void handleRequest(std::string &body, Client &client) = 0;

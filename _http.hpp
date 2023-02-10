@@ -40,7 +40,6 @@ struct Http{
 				size_t pos = body.find("\r\n\r\n");
 				if (pos == std::string::npos)
 				{
-					std::cout << "\n\nerror here\n\n";
 					client.set_error_code(BAD_REQUEST);
 					return ;
 				}

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 18:49:22 by mel-amma          #+#    #+#             */
-/*   Updated: 2023/02/09 17:51:07 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/10 12:12:12 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include "ListClients.hpp"
 #include "static/ContentTypes.hpp"
 #include "static/StaticConfiguration.hpp"
+#include "static/SupportedMethods.hpp"
 #include "parsing/configParser/ServerConfigs.hpp"
 #include "parsing/configParser/ConfigParser.hpp"
 #include "parsing/requestParser/HeaderParser.hpp"

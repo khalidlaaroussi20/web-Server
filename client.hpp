@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:06:20 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/09 16:00:57 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/10 15:02:02 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,11 @@ class Client
 	public :
 		socklen_t address_length;
 		struct sockaddr_storage address;
-		char address_buffer[128];
-		SOCKET socket;
-		char request[MAX_REQUEST_SIZE + 1];
-		char *path;
-		FILE *fp;
+		char 	address_buffer[128];
+		SOCKET 	socket;
+		char 	request[MAX_REQUEST_SIZE + 1];
+		char 	*path;
+		FILE 		*fp;
 		int 		received;
 		int 		responseCode;
 		bool		sendError;
