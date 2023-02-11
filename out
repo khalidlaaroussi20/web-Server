@@ -2,8 +2,7 @@ Creating socket...
 Binding socket to local address...
 Listening...
 New connection from 7.
-client added 
-filePath = /tmp/1676049242.html
+request Path = / bestLocation : / isErrorHappend = 0
 /.
 /..
 /errors
@@ -20,39 +19,59 @@ Content-Type: text/html
 
 
 New connection from 9.
-client added 
+request Path = /errors bestLocation : / isErrorHappend = 0
+/errors/.
+/errors/..
+/errors/400.html
+/errors/404.html
+/errors/405.html
+/errors/aaaa
 HTTP/1.1 200 OK 
 Connection: close
-Content-Length: 330
+Content-Length: 358
 Content-Type: text/html
 
 
 New connection from 8.
-client added 
-HTTP/1.1 200 OK 
-Connection: close
-Content-Length: 6005
-Content-Type: image/png
-
-
 New connection from 7.
-client added 
+request Path = /errors bestLocation : / isErrorHappend = 0
+/errors/.
+/errors/..
+/errors/400.html
+/errors/404.html
+/errors/405.html
+/errors/aaaa
 HTTP/1.1 200 OK 
 Connection: close
-Content-Length: 455
+Content-Length: 358
 Content-Type: text/html
+
+
+request Path = /test.txt bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 41
+Content-Type: text/plain
 
 
 New connection from 9.
-client added 
 New connection from 7.
-client added 
+request Path = /smile.png bestLocation : / isErrorHappend = 0
 HTTP/1.1 200 OK 
 Connection: close
-Content-Length: 330
+Content-Length: 6005
+Content-Type: image/png
+
+
+New connection from 8.
+request Path = /planet bestLocation : /planet isErrorHappend = 0
+HTTP/1.1 404  Not Found 
+Connection: close
+Content-Length: 275
 Content-Type: text/html
 
 
+request Path = /smile.png bestLocation : / isErrorHappend = 0
 HTTP/1.1 200 OK 
 Connection: close
 Content-Length: 6005
@@ -60,9 +79,15 @@ Content-Type: image/png
 
 
 New connection from 7.
-client added 
 New connection from 8.
-client added 
+request Path = /page2.html bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 171
+Content-Type: text/html
+
+
+request Path = /page2.html bestLocation : / isErrorHappend = 0
 HTTP/1.1 200 OK 
 Connection: close
 Content-Length: 171
@@ -70,13 +95,15 @@ Content-Type: text/html
 
 
 New connection from 7.
-client added 
-HTTP/1.1 404  Not Found 
+New connection from 8.
+request Path = /index.html bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
 Connection: close
-Content-Length: 275
+Content-Length: 330
 Content-Type: text/html
 
 
+request Path = /smile.png bestLocation : / isErrorHappend = 0
 HTTP/1.1 200 OK 
 Connection: close
 Content-Length: 6005
@@ -84,17 +111,16 @@ Content-Type: image/png
 
 
 New connection from 7.
-client added 
-New connection from 8.
-client added 
+request Path = /page2.html bestLocation : / isErrorHappend = 0
 HTTP/1.1 200 OK 
 Connection: close
-Content-Length: 6005
-Content-Type: image/png
+Content-Length: 171
+Content-Type: text/html
 
 
+New connection from 9.
 New connection from 7.
-client added 
+request Path = /test.txt bestLocation : / isErrorHappend = 0
 HTTP/1.1 200 OK 
 Connection: close
 Content-Length: 41
@@ -102,46 +128,85 @@ Content-Type: text/plain
 
 
 New connection from 8.
-client added 
-HTTP/1.1 404  Not Found 
+request Path = /form.html bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 455
+Content-Type: text/html
+
+
+New connection from 7.
+request Path = /errors bestLocation : / isErrorHappend = 0
+/errors/.
+/errors/..
+/errors/400.html
+/errors/404.html
+/errors/405.html
+/errors/aaaa
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 358
+Content-Type: text/html
+
+
+request Path = /errors/400.html bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
 Connection: close
 Content-Length: 274
 Content-Type: text/html
 
 
 New connection from 7.
-client added 
-filePath = /tmp/1676049265.html
-/.
-/..
-/errors
-/form.html
-/index.html
-/page2.html
-/planet
-/smile.png
-/test.txt
+New connection from 8.
+request Path = /errors/404.html bestLocation : / isErrorHappend = 0
 HTTP/1.1 200 OK 
 Connection: close
-Content-Length: 457
+Content-Length: 274
 Content-Type: text/html
 
 
-New connection from 8.
-client added 
-filePath = /tmp/1676049267.html
-/.
-/..
-/errors
-/form.html
-/index.html
-/page2.html
-/planet
-/smile.png
-/test.txt
+request Path = /errors/405.html bestLocation : / isErrorHappend = 0
 HTTP/1.1 200 OK 
 Connection: close
-Content-Length: 457
+Content-Length: 282
+Content-Type: text/html
+
+
+New connection from 9.
+New connection from 7.
+request Path = /errors/aaaa bestLocation : / isErrorHappend = 0
+/errors/aaaa/.
+/errors/aaaa/..
+/errors/aaaa/400.html
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 231
+Content-Type: text/html
+
+
+request Path = /errors/aaaa/400.html bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+New connection from 9.
+New connection from 7.
+request Path = /errors/aaaa/ bestLocation : / isErrorHappend = 0
+/errors/aaaa/.
+/errors/aaaa/..
+/errors/aaaa/400.html
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 231
+Content-Type: text/html
+
+
+request Path = /errors/aaaa/400.html bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 274
 Content-Type: text/html
 
 

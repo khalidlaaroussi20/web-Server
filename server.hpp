@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/10 18:13:44 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/11 12:29:21 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,6 @@ class Server
 					}
 				}
 			}
-			//std::cout << "best InDEX = " << idxBestLocation << std::endl;
 			return (locations[idxBestLocation]);
 		}
 		
@@ -146,18 +145,20 @@ class Server
 			}
 			std::string fileName = genereteRandomName() + ".html";
 			std::string filePath = "/tmp/" +  fileName;
-			std::cout << "filePath = " << filePath << std::endl;
 			FILE *listDir = fopen(filePath.c_str(),"wb");
 			if (listDir == nullptr)
 			{
 				std::cout << "failed open file\n\n";
+				return ;
 			}
 			dirent* entry = readdir(dir);
 			std::string fileContent = "<html><head><title>Example Page</title></head><body><h1>List Files : </h1><ul>";
 			
 			while (entry != NULL) {
-				std::string url = client.requestHandler->getPath() + entry->d_name;
-				
+				std::string url = client.requestHandler->getPath();
+				if (url[url.length() - 1] != '/')
+					url += "/";
+				url += entry->d_name;
 				std::cout << url << std::endl;
 				fileContent += "<li><a href=" + url  + ">" + entry->d_name +   "</a></li><br>";
 				entry = readdir(dir);
@@ -178,7 +179,6 @@ class Server
 				client.responseCode = BAD_REQUEST;
 				return ;			
 			}
-			
 			struct stat s;
 			if( stat(path.c_str(),&s) == 0 )
 			{
@@ -187,7 +187,7 @@ class Server
 					std::vector <std::string> &indexes =  bestLocation.getIndexes();
 					for (int i = 0; i < indexes.size();i++)
 					{
-						std::string fullPath = path + indexes[i];
+						std::string fullPath = path + "/" + indexes[i];
 						if (fullPath.length() < 100)
 						{
 							client.fp = fopen(fullPath.c_str(), "rb");
@@ -199,7 +199,9 @@ class Server
 						}
 					}
 					if (bestLocation.getAutoIndex())
+					{
 						listDirectoyIntoFile(client, path);
+					}
 				}
 				else if( s.st_mode & S_IFREG )
 				{
@@ -256,6 +258,7 @@ class Server
 			std::string path = client.path;
 			
 			Location &bestLocationMatched = getBestMatchedLocation(_serverConfigs.getLocations(), client.path);
+			std::cout << "request Path = " << path << " bestLocation : " << bestLocationMatched.getRoute() << " isErrorHappend = " << client.sendError << std::endl;
 			if (!client.sendError)
 			{
 				if (bestLocationMatched.isMethodAllowed(client.requestHandler->getMethod()))
@@ -313,7 +316,6 @@ class Server
 			FD_SET(newClient.socket, &reads);
 			FD_SET(newClient.socket, &writes);
 			maxSocketSoFar = std::max(maxSocketSoFar, newClient.socket);
-			std::cout << "client added \n";
 		}
 
 		void send_400(Client &client, fd_set &reads, fd_set &writes, int &clientIdx) {
