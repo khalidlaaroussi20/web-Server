@@ -1,5 +1,5 @@
-server 
-{
+server  
+{  
     listen			localhost:3030
     server_name			server_1
     max_client_body_size  42949672
@@ -30,3 +30,4 @@ server
         cgi_pass php ./cgi-bin/php-cgi
     }
 }
+

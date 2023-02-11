@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/10 15:32:35 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/11 17:45:13 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -293,6 +293,13 @@ class ConfigParser
 				std::string nextToken = getNextToken();
 				if (bracketStack.empty())
 				{
+					if (nextToken.empty())
+					{
+						if (servers.empty())
+							pErrorParsing("File is Empty!");
+						else
+							continue;
+					}
 					if (nextToken == "server")
 					{
 

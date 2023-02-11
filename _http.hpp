@@ -24,6 +24,8 @@ struct Http{
 		Client &client = _clients[Client_Number];
 		memset(client.request, 0 , BUFFER_SIZE);
 		int sz = recv(client.socket, client.request , BUFFER_SIZE, 0);
+		if (sz >= 0)
+			client.request[sz] = '\0';
 		std::string body = client.request;
 		if  (!client.isRequestHeaderDone())
 		{
@@ -49,16 +51,21 @@ struct Http{
 					client.factoryRequestHandlerSetter();
 				//parse request
 				client.requestHandler->parseRequestHeader(header);
-				std::string &path = client.requestHandler->getPath();
-				client.path  = new char[path.length() + 1];
-				strcpy(client.path, path.c_str());
 				client.requestHeaderDone = true;
 			};
 		}
 		if (client.requestHandler)
 		{
 			client.requestHandler->handleRequest(body, client);
+			if (sz <= 0)
+			{
+				std::string &path = client.requestHandler->getPath();
+				client.path  = new char[path.length() + 1];
+				strcpy(client.path, path.c_str());
+			}
 		}
+		
+
     };
 
 

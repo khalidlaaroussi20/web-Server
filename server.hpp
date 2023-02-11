@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/11 12:29:21 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/11 16:09:20 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,7 @@ class Server
 				if (url[url.length() - 1] != '/')
 					url += "/";
 				url += entry->d_name;
-				std::cout << url << std::endl;
+				//std::cout << url << std::endl;
 				fileContent += "<li><a href=" + url  + ">" + entry->d_name +   "</a></li><br>";
 				entry = readdir(dir);
 			}
@@ -258,7 +258,7 @@ class Server
 			std::string path = client.path;
 			
 			Location &bestLocationMatched = getBestMatchedLocation(_serverConfigs.getLocations(), client.path);
-			std::cout << "request Path = " << path << " bestLocation : " << bestLocationMatched.getRoute() << " isErrorHappend = " << client.sendError << std::endl;
+			//std::cout << "request Path = " << path << " bestLocation : " << bestLocationMatched.getRoute() << " isErrorHappend = " << client.sendError << std::endl;
 			if (!client.sendError)
 			{
 				if (bestLocationMatched.isMethodAllowed(client.requestHandler->getMethod()))
