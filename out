@@ -1,2 +1,26 @@
-nextToken = server
-nextToken = 
+Creating socket...
+Binding socket to local address...
+Listening...
+New connection from 7.
+size Read = 487
+POST / HTTP/1.1
+User-Agent: PostmanRuntime/7.30.0
+Accept: */*
+Postman-Token: a77d0831-0b73-4f24-b7cd-7ad81591aed0
+Host: localhost:3030
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Content-Type: multipart/form-data; boundary=--------------------------884009791543283307026740
+Content-Length: 1666803
+method = POST
+_path = /
+httpVersion = HTTP/1.1
+values : Accept */* 
+values : Accept-Encoding gzip deflate br 
+values : Connection keep-alive 
+values : Content-Length 1666803 
+values : Content-Type multipart/form-data boundary --------------------------884009791543283307026740 
+values : Host localhost 3030 
+values : Postman-Token a77d0831-0b73-4f24-b7cd-7ad81591aed0 
+values : User-Agent PostmanRuntime/7.30.0 
+values : boundary --------------------------884009791543283307026740 

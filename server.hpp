@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/11 16:09:20 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/13 16:37:59 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,7 +159,6 @@ class Server
 				if (url[url.length() - 1] != '/')
 					url += "/";
 				url += entry->d_name;
-				//std::cout << url << std::endl;
 				fileContent += "<li><a href=" + url  + ">" + entry->d_name +   "</a></li><br>";
 				entry = readdir(dir);
 			}
@@ -232,6 +231,10 @@ class Server
 				headerRespone += "  Bad Request ";
 			else if (client.responseCode == NOT_FOUND)
 				headerRespone += "  Not Found ";
+			else if (client.responseCode == OK)
+				headerRespone += "  OK ";
+			else if (client.responseCode == CREATED)
+				headerRespone += "  Created ";
 			else if (client.responseCode == METHOD_NOT_ALLOWED)
 			{
 				headerRespone += "  Method Not Allowed\r\nAllow: ";
@@ -248,7 +251,7 @@ class Server
 		
 		void setPathError(Client &client, std::string &path)
 		{
-			path = getServerConfigs().getErrorPage(client.responseCode);
+			path = client.getRequestConfigs().getErrorPage(client.responseCode);
 			client.fp = fopen(path.c_str(), "rb");
 		}
 
@@ -257,8 +260,9 @@ class Server
 		{
 			std::string path = client.path;
 			
-			Location &bestLocationMatched = getBestMatchedLocation(_serverConfigs.getLocations(), client.path);
-			//std::cout << "request Path = " << path << " bestLocation : " << bestLocationMatched.getRoute() << " isErrorHappend = " << client.sendError << std::endl;
+			ServerConfigs serverConfig = client.getRequestConfigs();
+			Location &bestLocationMatched = getBestMatchedLocation(serverConfig.getLocations(), client.path);
+			std::cout << "request Path = " << path << " bestLocation : " << bestLocationMatched.getRoute() << " isErrorHappend = " << client.sendError << std::endl;
 			if (!client.sendError)
 			{
 				if (bestLocationMatched.isMethodAllowed(client.requestHandler->getMethod()))

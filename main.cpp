@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 16:34:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/10 15:00:03 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/13 16:48:52 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,8 @@ int main(int ac , char **av)
 	}
 	std::ifstream myfile (av[1]);
 	ConfigParser parser = ConfigParser(readFile(av[1]));
-
+	
+	//map<host+ip , <map <server name,server>>>
 	std::map<std::string, ServerMap > servers;
 	SOCKET maxSocketSoFar = -1;
 	fd_set reads , writes, readyReads, readyWrites;
@@ -76,23 +77,31 @@ int main(int ac , char **av)
 				fprintf(stderr, "select() failed. (%d)\n", GETSOCKETERRNO());
 				break;
 			}
+			// std::cout << "socketready " << std::flush;
+			// for(int i = 0; i < maxSocketSoFar + 1; i++)
+			// {
+			// 	if (FD_ISSET(i, &readyReads))
+			// 		std::cout << i << " ";
+			// }
+			// std::cout << std::endl;
 			for (auto &xs : servers)
 			{
-				for (auto &ser : xs.second)
+				// first server with that ip + port of different host_names
+				auto &ser = *(xs.second.begin()); 
+				Server &server = ser.second;//getting server from the map
+				ListClients &clients = server.getClients();
+				ft::Http http(reads, writes, clients, server);
+				if (FD_ISSET(server.getSocket(), &readyReads))
+					server.addClient(maxSocketSoFar, reads, writes);
+				for (int i = 0; i < clients.getNumberClient(); i++)
 				{
-					Server &server  = ser.second;
-					ListClients &clients = server.getClients();
-					ft::Http http(reads, writes, clients,server);
-					if (FD_ISSET(server.getSocket(), &readyReads))
-						server.addClient(maxSocketSoFar, reads, writes);
-					for (int i = 0; i < clients.getNumberClient(); i++)
+					int sizeClient = clients.getNumberClient();
+					if (FD_ISSET(clients[i].socket, &readyReads))
+						http.getRequest(i,xs.second);
+					if (i >= 0 && FD_ISSET(clients[i].socket, &readyWrites) && clients[i].body_is_done())
 					{
-						int sizeClient = clients.getNumberClient();
-						if (FD_ISSET(clients[i].socket, &readyReads))
-							http.getRequest(i);
-						if (i >= 0  && FD_ISSET(clients[i].socket, &readyWrites) && clients[i].path)
-							http.sendResponse(i);
-					}	
+						http.sendResponse(i);
+					}
 				}
 			}
 		}

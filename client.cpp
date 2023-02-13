@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/09 17:49:56 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/13 16:41:21 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ Client::Client()
 	sendError = false;
 	requestHeaderDone = false;
 	requestHandler = nullptr;
+	body_done = false;
 }
 
 
@@ -37,6 +38,7 @@ Client::Client(SOCKET socket)
 	sendError = false;
 	requestHeaderDone = false;
 	requestHandler = nullptr;
+	body_done = false;
 }
 
 
@@ -74,4 +76,20 @@ void Client::factoryRequestHandlerSetter()
 		set_error_code(METHOD_NOT_ALLOWED);
 	}
 	
+}
+
+void Client::set_request_configs(ServerConfigs	*requestConfigs_)
+{
+	requestConfigs = requestConfigs_;
+};
+
+void Client::finished_body()
+{
+	set_error_code(CREATED);
+	body_done = true;
+};
+
+bool Client::body_is_done()
+{
+	return body_done;
 }

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 15:07:32 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/09 15:56:25 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/13 17:31:52 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,11 @@ struct ContentTypes
 		contentTypeMapping[".pdf"] = "application/pdf";
 		contentTypeMapping[".svg"] = "image/svg+xml";
 		contentTypeMapping[".txt"] = "text/plain";
+		contentTypeMapping[".mp4"] = "video/mp4";	
+		contentTypeMapping[".mjs"] = "text/javascript";
+		contentTypeMapping[".mp3"] = "audio/mpeg";
+		contentTypeMapping[".mpeg"] = "video/mpeg";
+		contentTypeMapping[".php"] = "application/x-httpd-php";
 		contentTypeMapping[""] = "application/octet-stream";
 		return (contentTypeMapping);
 	};
@@ -63,6 +68,11 @@ struct ContentTypes
 		extentionsMapping["image/svg+xml"] = ".svg";
 		extentionsMapping["text/plain"] = ".txt";
 		extentionsMapping["application/octet-stream"] = "";
+		extentionsMapping["video/mp4"] = ".mp4";	
+		extentionsMapping["text/javascript"] = ".mjs";
+		extentionsMapping["audio/mpeg"] = ".mp3";
+		extentionsMapping["video/mpeg"] = ".mpeg";
+		extentionsMapping["application/x-httpd-php"] = ".php";
 		return (extentionsMapping);
 	}
 

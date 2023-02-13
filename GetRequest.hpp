@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GetRequest.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mel-amma <mel-amma@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:37:58 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/09 12:47:16 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/12 18:15:17 by mel-amma         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 class GetRequest : public  A_Request
 {
 	public :
-		void handleRequest(std::string &body, Client &client);
+		void handleRequest(std::string &body, size_t size, Client &client);
 		~GetRequest();
 };
 

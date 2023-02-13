@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/09 16:55:47 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/13 18:03:23 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,26 @@ class HeaderParser
 		}
 		
 
-		std::string getNextToken(char delimeter = ':')
+		bool isDelimeter(char c, std::string &delimeter)
+		{
+			for (int i = 0; i < delimeter.length(); i++)
+			{
+				if (c == delimeter[i])
+					return (true);
+			}
+			return (false);
+		}
+
+		std::string getNextToken(std::string &delimeter)
 		{
 			std::string nextToken = "";
 			while (_currPos < _serverConfig.length())
 			{
-				if ((_currPos + 1 < _serverConfig.length() && _serverConfig[_currPos] == '\r' && _serverConfig[_currPos + 1] == '\n')  || isspace(_serverConfig[_currPos]) || _serverConfig[_currPos] == delimeter)
+				bool isDel = isDelimeter(_serverConfig[_currPos], delimeter);
+				if ((_currPos + 1 < _serverConfig.length() && _serverConfig[_currPos] == '\r' && _serverConfig[_currPos + 1] == '\n') \
+					|| isspace(_serverConfig[_currPos]) || isDel)
 				{
-					if (nextToken.empty() &&  (_serverConfig[_currPos] == delimeter))
+					if (nextToken.empty() &&  (isDel))
 					{
 						nextToken += _serverConfig[_currPos];
 						_currPos++;
@@ -77,38 +89,21 @@ class HeaderParser
 				_currPos++;
 		}
 
-		std::string getValueCurrToken()
-		{
-			std::string value;
-			skipSpaces();
-			std::string delimter = getNextToken();
-			if (delimter != ":")
-				pErrorParsing("parsing request Error");
-			
-			while (_currPos < _serverConfig.length() && _serverConfig[_currPos] != '\n')
-			{
-				skipSpaces();
-				if (_serverConfig[_currPos] == '\n')
-					break;
-				value += _serverConfig[_currPos++];
-			}
-			return (value);
-		};
 
-		std::vector <std::string> getValuesCurrToken()
+		std::vector <std::string> getValuesCurrToken(std::string &delimeters)
 		{
 			std::vector <std::string> values;
 			skipSpaces();
-			std::string delimter = getNextToken();
-			if (delimter == ":")
+			std::string nextToken = getNextToken(delimeters);
+			if (nextToken == ":")
 			{
 				while (_currPos < _serverConfig.length() && _serverConfig[_currPos] != '\n')
 				{
 					skipSpaces();
 					if (_serverConfig[_currPos] == '\n')
 						break;
-					std::string nextToken = getNextToken(',');
-					if (nextToken != ",")
+					nextToken = getNextToken(delimeters);
+					if (nextToken.size() > 1 || !isDelimeter(nextToken[0] ,delimeters))
 						values.push_back(nextToken);
 				}
 			}

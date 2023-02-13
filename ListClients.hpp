@@ -4,11 +4,14 @@
 
 #include "client.hpp"
 
+class Client;
+
 class ListClients
 {
 	private:
 		std::vector<Client> _clients;
 	public:
+	ListClients(){};
 		int	getClient(SOCKET clientSocket) const
 		{
 			for (int i = 0; i < _clients.size(); i++)
@@ -33,6 +36,7 @@ class ListClients
 
 		void dropClient(int &clientIdx, fd_set &reads, fd_set &writes)
 		{
+			std::cout << "dropping client " << clientIdx << std::endl;
 			SOCKET clientSocket = _clients[clientIdx].socket;
 			FD_CLR(clientSocket, &reads);
 			FD_CLR(clientSocket, &writes);

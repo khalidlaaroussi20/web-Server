@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 11:19:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/09 15:08:25 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/13 16:35:55 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ enum StatusCode
 	BAD_REQUEST = 400,
 	METHOD_NOT_ALLOWED = 405,
 	INTERNAL_SERVER_ERROR = 500,
-	OK = 200
+	OK = 200,
+	CREATED = 201
 };
 
 
