@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 16:34:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/13 16:48:52 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/15 12:45:36 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,9 @@ std::map <std::string, std::string > ContentTypes::S_EXTENTIONS_MAPPING =  Conte
 
 
 std::map <std::string, bool> SupportedMethods::SUPPORTED_METHODS =  SupportedMethods::S_SetSupportedMethods();
+
+
+std::map < int  , std::string> StaticResponseMessages::MAPPING_RESPONSE_CODE_TO_MESSAGES = StaticResponseMessages::S_initResponseMessages();
 
 
 std::string readFile(std::string file)

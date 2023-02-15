@@ -41,6 +41,8 @@ class ListClients
 			FD_CLR(clientSocket, &reads);
 			FD_CLR(clientSocket, &writes);
 			CLOSESOCKET(clientSocket);
+			// if (_clients[clientIdx].requestConfigs)
+			// 	delete _clients[clientIdx].requestConfigs;
 			_clients.erase(_clients.begin() + clientIdx);
 			clientIdx--;
 		}

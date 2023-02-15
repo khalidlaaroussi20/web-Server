@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ConfigParser.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mel-amma <mel-amma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/11 17:50:52 by mel-amma         ###   ########.fr       */
+/*   Updated: 2023/02/15 17:39:01 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,12 +185,12 @@ class ConfigParser
 			}
 		}
 
-		int toInt(std::string &str)
+		unsigned long long toUnsigendLL(std::string &str)
 		{
-			int nb;
+			unsigned long long nb;
 			try
 			{
-				nb = std::stoi(str);
+				nb = std::stoull(str);
 			}
 			catch(const std::exception& e)
 			{
@@ -200,9 +200,9 @@ class ConfigParser
 			return (nb);
 		}
 
-		int getErrorCode(std::string &ErrorCode)
+		unsigned long long getErrorCode(std::string &ErrorCode)
 		{
-			int nb = toInt(ErrorCode);
+			unsigned long long nb = toUnsigendLL(ErrorCode);
 
 			if (nb < 400 || nb >= 600)
 			{
@@ -225,7 +225,7 @@ class ConfigParser
 			}
 			else if (ConfigName == "max_client_body_size")
 			{
-				int MaxBodySize = toInt(values[0]);
+				unsigned long long MaxBodySize = toUnsigendLL(values[0]);
 				if (MaxBodySize < 0)
 				{
 					std::cerr << "Max Body size not Valid" << '\n';

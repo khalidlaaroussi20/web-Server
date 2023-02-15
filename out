@@ -2,25 +2,73 @@ Creating socket...
 Binding socket to local address...
 Listening...
 New connection from 7.
-size Read = 487
-POST / HTTP/1.1
-User-Agent: PostmanRuntime/7.30.0
-Accept: */*
-Postman-Token: a77d0831-0b73-4f24-b7cd-7ad81591aed0
-Host: localhost:3030
-Accept-Encoding: gzip, deflate, br
-Connection: keep-alive
-Content-Type: multipart/form-data; boundary=--------------------------884009791543283307026740
-Content-Length: 1666803
-method = POST
-_path = /
-httpVersion = HTTP/1.1
-values : Accept */* 
-values : Accept-Encoding gzip deflate br 
-values : Connection keep-alive 
-values : Content-Length 1666803 
-values : Content-Type multipart/form-data boundary --------------------------884009791543283307026740 
-values : Host localhost 3030 
-values : Postman-Token a77d0831-0b73-4f24-b7cd-7ad81591aed0 
-values : User-Agent PostmanRuntime/7.30.0 
-values : boundary --------------------------884009791543283307026740 
+New connection from 8.
+body_done 
+request Path = /form.html bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 455
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+body_done 
+request Path = / bestLocation : / isErrorHappend = 0
+HTTP/1.1 403 Forbidden 
+Connection: close
+Content-Length: 265
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 8.
+body_done 
+request Path = /aaa bestLocation : / isErrorHappend = 0
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+body_done 
+request Path = /index.html bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 330
+Content-Type: text/html
+
+
+dropping client 0
+body_done 
+request Path = /smile.png bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 6005
+Content-Type: image/png
+
+
+dropping client 0
+New connection from 7.
+New connection from 8.
+body_done 
+request Path = /page2.html bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 171
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+body_done 
+request Path = /test.txt bestLocation : / isErrorHappend = 0
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 41
+Content-Type: text/plain
+
+
+dropping client 0

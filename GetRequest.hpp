@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   GetRequest.hpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mel-amma <mel-amma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:37:58 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/12 18:15:17 by mel-amma         ###   ########.fr       */
+/*   Updated: 2023/02/15 15:10:58 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #define GET_REQUEST_HPP
 
 #include "A_Request.hpp"
+#include "client.hpp"
 
 class GetRequest : public  A_Request
 {

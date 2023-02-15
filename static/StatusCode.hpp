@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 11:19:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/13 16:35:55 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/15 16:55:00 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,16 @@ enum StatusCode
 {
 	NOT_FOUND = 404,
 	BAD_REQUEST = 400,
+	FORBIDDEN = 403,
 	METHOD_NOT_ALLOWED = 405,
+	REQUEST_ENTITY_TOO_LARGE = 413,
+	REQUEST_URI_TOO_LONG = 414,
+	REQUEST_HEADER_TOO_LARGE = 494,
 	INTERNAL_SERVER_ERROR = 500,
 	OK = 200,
-	CREATED = 201
+	CREATED = 201,
+	NOT_IMPLEMENTED = 501,
+	MOVED_PERMANETLY = 313
 };
 
 

@@ -30,11 +30,9 @@ struct Http{
 			printf("Unexpected disconnect from %d.\n",
 				client.socket);
 			_clients.dropClient(Client_Number, _reads, _writes);
+			return ;
 		}
-		std::cout << "size Read = " << sz << std::endl;
-		client.request[sz] = 0;
-		// std::cout << strlen(client.request)<< std::endl;
-		
+		client.request[sz] = 0;		
 		std::string body(client.request,sz);
 		if  (!client.isRequestHeaderDone())
 		{
@@ -43,9 +41,9 @@ struct Http{
 			size_t pos = body.find("\r\n\r\n");
 			if (pos == std::string::npos)
 			{
-				std::cout << "\n\nerror here\n\n";
-				client.set_error_code(BAD_REQUEST);
-				return;
+				client.set_response_code(REQUEST_HEADER_TOO_LARGE);
+				client.finished_body();
+				return ;
 			}
 			std::string header = body.substr(0, pos);
 			body = body.substr(std::min(pos + 4, sz), sz);
@@ -67,18 +65,24 @@ struct Http{
 					if (host == serv.first)
 					{
 						requestConfigs = &(serv.second.getServerConfigs());
-						break;
+						break ;
 					}
 				}
 			}
 			client.set_request_configs(requestConfigs);
-
 			std::string &path = client.requestHandler->getPath();
 			client.path = new char[path.length() + 1];
 			strcpy(client.path, path.c_str());
+			client.setBestLocationMatched();
 			client.requestHeaderDone = true;
+			if (client.requestHandler->isRequestWellFormed(client) == false)
+			{
+				client.finished_body();
+				return ;
+			}
+		
 		}
-		if (client.requestHandler)
+		if (client.sendError == false && client.requestHandler)
 		{
 			client.requestHandler->handleRequest(body, sz, client);
 			if(client.body_is_done())
@@ -90,7 +94,6 @@ struct Http{
 
     void sendResponse(int Client_Number)
     {
-		std::cout << "sending response" << std::endl;
 		Client &client = _clients[Client_Number];
 		bool isHeaderSendSuccefuly = true;
         if (client.fp == nullptr)
@@ -112,27 +115,6 @@ struct Http{
 		{
 			
 		}
-
-
-		//deprecated
-        void get_request_done(int Client_Number)
-        {
-			Client &client = _clients[Client_Number];
-            if (strncmp("GET /", client.request, 5))
-				client.set_error_code(BAD_REQUEST);
-            else
-            {
-                char *path = client.request + 4;
-                char *end_path = strstr(path, " ");
-                if (!end_path)
-                    client.set_error_code(BAD_REQUEST);
-                else
-                {
-                    *end_path = 0;
-                    client.path = path;
-                }
-            }
-        }
 };
 
 }

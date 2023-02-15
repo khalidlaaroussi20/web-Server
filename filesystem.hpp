@@ -98,6 +98,12 @@ public:
         }
     }
 
+    void Write_chunk(const char *content, size_t size)  {
+        if (file.is_open()) {
+            file.write(content,size);
+        }
+    }
+
     void Write(const std::string& contents)  {
         if (file.is_open()) {
             file << contents;

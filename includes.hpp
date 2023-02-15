@@ -43,5 +43,6 @@
 
 #define MAX_REQUEST_SIZE 4096
 #define BUFFER_SIZE		 2048
+#define MAX_URI_SIZE     2048
 
 #endif

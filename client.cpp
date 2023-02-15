@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/13 16:41:21 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/15 17:24:36 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ Client::Client()
 	requestHeaderDone = false;
 	requestHandler = nullptr;
 	body_done = false;
+	bestLocationMatched= nullptr;
 }
 
 
@@ -39,6 +40,8 @@ Client::Client(SOCKET socket)
 	requestHeaderDone = false;
 	requestHandler = nullptr;
 	body_done = false;
+	bestLocationMatched= nullptr;
+
 }
 
 
@@ -55,9 +58,9 @@ const char *Client::get_address() //return address client as string
 			NI_NUMERICHOST);
 	return (address_buffer);
 }
-void Client::set_error_code(int ErrorCode)
+void Client::set_response_code(StatusCode responseCode)
 {
-	responseCode = ErrorCode;
+	this->responseCode = responseCode;
 	sendError = true;
 }
 
@@ -73,7 +76,8 @@ void Client::factoryRequestHandlerSetter()
 	else
 	{
 		requestHandler = new GetRequest();
-		set_error_code(METHOD_NOT_ALLOWED);
+		set_response_code(METHOD_NOT_ALLOWED);
+		finished_body();
 	}
 	
 }
@@ -85,9 +89,18 @@ void Client::set_request_configs(ServerConfigs	*requestConfigs_)
 
 void Client::finished_body()
 {
-	set_error_code(CREATED);
 	body_done = true;
 };
+
+void Client::setBestLocationMatched()
+{
+	if (requestConfigs)
+	{
+		std::string currPath = path;
+		bestLocationMatched = &(requestConfigs->getBestMatchedLocation(currPath));
+	}
+	
+}
 
 bool Client::body_is_done()
 {

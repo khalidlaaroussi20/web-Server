@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   webserv.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mel-amma <mel-amma@student.42.fr>          +#+  +:+       +#+        */
+/*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 18:49:22 by mel-amma          #+#    #+#             */
-/*   Updated: 2023/02/11 13:41:23 by mel-amma         ###   ########.fr       */
+/*   Updated: 2023/02/15 12:43:12 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include "static/ContentTypes.hpp"
 #include "static/StaticConfiguration.hpp"
 #include "static/SupportedMethods.hpp"
+#include "static/StaticConfiguration.hpp"
 #include "parsing/configParser/ServerConfigs.hpp"
 #include "parsing/configParser/ConfigParser.hpp"
 #include "parsing/requestParser/HeaderParser.hpp"

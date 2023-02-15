@@ -14,6 +14,7 @@
 #define A_REQUEST_HPP
 
 #include "includes.hpp"
+#include "static/StatusCode.hpp"
 #include "parsing/requestParser/HeaderParser.hpp"
 
 class Client;
@@ -29,78 +30,23 @@ class A_Request
 		
 public:
 	typedef std::map<std::string , std::vector < std::string > > headersType;
-	A_Request()
-	{
-		_isErrorOccurs = false;
-	};
-
-	std::string &getPath() 
-	{
-		return (_path);
-	}
+	A_Request();
+	std::string &getPath();
 	
-	std::string &getMethod() 
-	{
-		return (_method);
-	}
+	std::string &getMethod();
 	
-	void parseRequestHeader(std::string &request)
-	{
-		std::string keysDelimeters = ":";
-		std::string valuesDelimeters = ";,=:";
-		std::cout << request << std::endl;
-		HeaderParser parser(request);
-		//std::cout << "request == " << request << std::endl;
-		_method = parser.getNextToken(keysDelimeters);
-		_path = parser.getNextToken(keysDelimeters);
-		_httpVersion =  parser.getNextToken(keysDelimeters);
-		std::cout << "method = " << _method << std::endl;
-		std::cout << "_path = " << _path << std::endl;
-		std::cout << "httpVersion = " << _httpVersion << std::endl;
+	void parseRequestHeader(std::string &request);
 
-		while (!parser.isDoneParsing())
-		{
-			std::string requestHeader = parser.getNextToken(keysDelimeters);
-			if (!requestHeader.empty())
-			{
-				std::vector < std::string >  values = parser.getValuesCurrToken(valuesDelimeters);
-				_headers[requestHeader] = values;
-				if (requestHeader == "Content-Type")
-				{
-					if (values.size() >= 3)
-					{
-						if (values[0] == "multipart/form-data")
-						{
-							if (values[1] != "boundary")
-								_isErrorOccurs = true;
-							else
-								_headers["boundary"] = std::vector <std::string> (1,values[2]);
-						}
-					}
-				}
-			}
-		}
-		for (auto xs : _headers)
-		{
-			std::cout << "values : " << xs.first << " ";
-			for (int i = 0; i < xs.second.size(); i++)
-				std::cout << xs.second[i] << " ";
-			std::cout << std::endl;
-		}
-		exit(2);
-	}
+	std::string &getHttpVersion();
 
-	std::string &getHttpVersion()
-	{
-		return (_httpVersion);
-	}
+	headersType &getHeaders();
 
-	headersType &getHeaders()
-	{
-		return (_headers);
-	}
+	std::string getHeaderValue(const std::string header);
 
-	virtual void handleRequest(std::string &body, size_t size,Client &client) = 0;
+	bool isRequestWellFormed(Client &client);
+
+
+	virtual void handleRequest(std::string &body, size_t size, Client &client) = 0;
 	
 	virtual ~A_Request()
 	{
