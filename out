@@ -2,16 +2,12 @@ Creating socket...
 Binding socket to local address...
 Listening...
 New connection from 7.
-
-
-after
-
-aa User-Agent: PostmanRuntime/7.31.0
-aa Accept: */*
-aa Postman-Token: 933e9342-8b5d-4b5c-83ad-ede06905d48b
-aa Host: localhost:3031
-aa Accept-Encoding: gzip, deflate, br
-aa Connection: keep-alive
+Accept :  */*
+Accept-Encoding :  gzip, deflate, br
+Connection :  keep-alive
+Host :  localhost3031
+Postman-Token :  d0cdcc58-db5f-4844-a6ef-29b70266f6d5
+User-Agent :  PostmanRuntime/7.31.0
 findedd
 len = 1 route = / length = 1
 body_done 

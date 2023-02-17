@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 14:53:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/17 12:28:26 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/17 15:24:32 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,19 +31,28 @@ std::string &A_Request::getMethod()
 
 void A_Request::setHeadersForCgi(std::string &request)
 {
+	std::string keysDelimeters = ":";
 	HeaderParser parser(request);
-	parser.getHeaderLine();
+	parser.getHeaderValue();
 	
 	while (!parser.isDoneParsing())
 	{
-		std::string headerLine = parser.getHeaderLine();
-		if (!headerLine.empty())
-			_headersForCgi.push_back(headerLine);
+		std::string requestHeader = parser.getNextToken(keysDelimeters);
+		if (!requestHeader.empty())
+		{
+			std::string  value = parser.getHeaderValue();
+			_headersForCgi[requestHeader] = value;
+		}
+	}
+
+	for (auto xs : _headersForCgi)
+	{
+		std::cout << xs.first << " : " << xs.second << std::endl;
 	}
 
 }
 
-void A_Request::parseRequestHeader(std::string &request)
+void A_Request::setHeadersRequest(std::string &request)
 {
 	std::string keysDelimeters = ":";
 	std::string valuesDelimeters = ";,=:";
@@ -74,6 +83,11 @@ void A_Request::parseRequestHeader(std::string &request)
 			}
 		}
 	}
+}
+
+void A_Request::parseRequestHeader(std::string &request)
+{
+	setHeadersRequest(request);
 	setHeadersForCgi(request);
 	// for (int i = 0; i < _headersForCgi.size(); i++)
 	// {

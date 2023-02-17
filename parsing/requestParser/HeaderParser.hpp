@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/17 12:27:14 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/17 15:26:18 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,13 @@ class HeaderParser
 			return (nextToken);
 		};
 
-		std::string getHeaderLine()
+		std::string getHeaderValue()
 		{
 			std::string nextToken = "";
 			while (_currPos < _request.length())
 			{
+				if (_request[_currPos] == ':')
+					_currPos++;
 				if ((_currPos + 1 < _request.length() && _request[_currPos] == '\r' && _request[_currPos + 1] == '\n'))
 				{
 					_currPos++;
