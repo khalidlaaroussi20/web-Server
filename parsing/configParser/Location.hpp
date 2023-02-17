@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 13:04:37 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/11 12:29:28 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/16 16:22:37 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,12 @@ class Location
 
 		bool isRouteMatch(std::string &path)
 		{
-			if (path.rfind(_route, 0) == 0 && (path.length() == _route.length() || ((path.length() > _route.length() && ( _route[_route.length() - 1] == '/' ||   path[_route.length() + 1] == '/')))))
+			if (path.rfind(_route, 0) == 0)
+			{
+				std::cout << "findedd\n";
+				std::cout << "len = " << path.length() << " route = " << _route << " length = " << _route.length() << std::endl;
+			}
+			if (path.rfind(_route, 0) == 0 && (path.length() == _route.length() || ((path.length() > _route.length() && ( _route[_route.length() - 1] == '/' ||   path[_route.length()] == '/')))))
 				return (true);
 			return (false);
 		}

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/13 18:03:23 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/17 12:27:14 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 class HeaderParser
 {
 	private :
-		unsigned int _currPos;
-		std::string _serverConfig;
+		unsigned int 	_currPos;
+		std::string 	_request;
 	
 	public :
 		HeaderParser()
@@ -30,15 +30,15 @@ class HeaderParser
 			_currPos = 0;
 		};
 		
-		HeaderParser(std::string _serverConfig)
+		HeaderParser(std::string _request)
 		{
-			this ->_serverConfig = _serverConfig;
+			this ->_request = _request;
 			_currPos = 0;
 		}
 
 		bool	isDoneParsing() const
 		{
-			return (_currPos >= _serverConfig.length());
+			return (_currPos >= _request.length());
 		}
 		
 
@@ -55,15 +55,15 @@ class HeaderParser
 		std::string getNextToken(std::string &delimeter)
 		{
 			std::string nextToken = "";
-			while (_currPos < _serverConfig.length())
+			while (_currPos < _request.length())
 			{
-				bool isDel = isDelimeter(_serverConfig[_currPos], delimeter);
-				if ((_currPos + 1 < _serverConfig.length() && _serverConfig[_currPos] == '\r' && _serverConfig[_currPos + 1] == '\n') \
-					|| isspace(_serverConfig[_currPos]) || isDel)
+				bool isDel = isDelimeter(_request[_currPos], delimeter);
+				if ((_currPos + 1 < _request.length() && _request[_currPos] == '\r' && _request[_currPos + 1] == '\n') \
+					|| isspace(_request[_currPos]) || isDel)
 				{
 					if (nextToken.empty() &&  (isDel))
 					{
-						nextToken += _serverConfig[_currPos];
+						nextToken += _request[_currPos];
 						_currPos++;
 						break;
 					}
@@ -71,11 +71,30 @@ class HeaderParser
 						break;
 				}
 				else
-					nextToken += _serverConfig[_currPos];
+					nextToken += _request[_currPos];
 				_currPos++;
 			}
 			return (nextToken);
 		};
+
+		std::string getHeaderLine()
+		{
+			std::string nextToken = "";
+			while (_currPos < _request.length())
+			{
+				if ((_currPos + 1 < _request.length() && _request[_currPos] == '\r' && _request[_currPos + 1] == '\n'))
+				{
+					_currPos++;
+					if (!nextToken.empty())
+						break;
+				}
+				else
+					nextToken += _request[_currPos];
+				_currPos++;
+			}
+			_currPos++;
+			return (nextToken);
+		}
 
 		void pErrorParsing(const char *msg) const
 		{
@@ -85,7 +104,7 @@ class HeaderParser
 
 		void skipSpaces()
 		{
-			while (_currPos < _serverConfig.length() && _serverConfig[_currPos] != '\n' && isspace(_serverConfig[_currPos]))
+			while (_currPos < _request.length() && _request[_currPos] != '\n' && isspace(_request[_currPos]))
 				_currPos++;
 		}
 
@@ -97,10 +116,10 @@ class HeaderParser
 			std::string nextToken = getNextToken(delimeters);
 			if (nextToken == ":")
 			{
-				while (_currPos < _serverConfig.length() && _serverConfig[_currPos] != '\n')
+				while (_currPos < _request.length() && _request[_currPos] != '\n')
 				{
 					skipSpaces();
-					if (_serverConfig[_currPos] == '\n')
+					if (_request[_currPos] == '\n')
 						break;
 					nextToken = getNextToken(delimeters);
 					if (nextToken.size() > 1 || !isDelimeter(nextToken[0] ,delimeters))
@@ -109,6 +128,7 @@ class HeaderParser
 			}
 			return (values);
 		};
+
 };
 
 #endif

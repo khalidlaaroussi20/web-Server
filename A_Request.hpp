@@ -27,6 +27,7 @@ class A_Request
 		std::string												_httpVersion;
 		std::map<std::string , std::vector < std::string > >	_headers;
 		bool													_isErrorOccurs;
+		std::vector<std::string>								_headersForCgi;
 		
 public:
 	typedef std::map<std::string , std::vector < std::string > > headersType;
@@ -34,8 +35,9 @@ public:
 	std::string &getPath();
 	
 	std::string &getMethod();
-	
+
 	void parseRequestHeader(std::string &request);
+	void setHeadersForCgi(std::string &request);
 
 	std::string &getHttpVersion();
 
@@ -47,6 +49,8 @@ public:
 
 
 	virtual void handleRequest(std::string &body, size_t size, Client &client) = 0;
+
+	bool isValidPath();
 	
 	virtual ~A_Request()
 	{

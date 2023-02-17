@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 14:53:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/15 17:11:56 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/17 12:28:26 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,19 +28,29 @@ std::string &A_Request::getMethod()
 	return (_method);
 }
 
+
+void A_Request::setHeadersForCgi(std::string &request)
+{
+	HeaderParser parser(request);
+	parser.getHeaderLine();
+	
+	while (!parser.isDoneParsing())
+	{
+		std::string headerLine = parser.getHeaderLine();
+		if (!headerLine.empty())
+			_headersForCgi.push_back(headerLine);
+	}
+
+}
+
 void A_Request::parseRequestHeader(std::string &request)
 {
 	std::string keysDelimeters = ":";
 	std::string valuesDelimeters = ";,=:";
-	//std::cout << request << std::endl;
 	HeaderParser parser(request);
-	//std::cout << "request == " << request << std::endl;
 	_method = parser.getNextToken(keysDelimeters);
 	_path = parser.getNextToken(keysDelimeters);
 	_httpVersion =  parser.getNextToken(keysDelimeters);
-	// std::cout << "method = " << _method << std::endl;
-	// std::cout << "_path = " << _path << std::endl;
-	// std::cout << "httpVersion = " << _httpVersion << std::endl;
 
 	while (!parser.isDoneParsing())
 	{
@@ -64,14 +74,12 @@ void A_Request::parseRequestHeader(std::string &request)
 			}
 		}
 	}
-	// for (auto xs : _headers)
+	setHeadersForCgi(request);
+	// for (int i = 0; i < _headersForCgi.size(); i++)
 	// {
-	// 	std::cout << "values : " << xs.first << " ";
-	// 	for (int i = 0; i < xs.second.size(); i++)
-	// 		std::cout << xs.second[i] << " ";
-	// 	std::cout << std::endl;
+	// 	std::cout << "aa " << _headersForCgi[i] << std::endl;
 	// }
-	// exit(2);
+	
 }
 
 std::string &A_Request::getHttpVersion()
@@ -121,4 +129,18 @@ bool A_Request::isRequestWellFormed(Client &client)
 
 	isWellFormed = true;
 	return (isWellFormed);
+}
+
+//aaa/a..
+
+bool A_Request::isValidPath()
+{
+	std::stringstream stream(_path + "/");
+	std::string token;
+	while (std::getline(stream, token, '/')){
+		if (token == ".." || token == "."){
+			return (false);
+		}
+	}
+	return (true);
 }

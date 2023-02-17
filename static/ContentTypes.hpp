@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 15:07:32 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/13 17:31:52 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/16 17:38:48 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ struct ContentTypes
 		contentTypeMapping[".mp3"] = "audio/mpeg";
 		contentTypeMapping[".mpeg"] = "video/mpeg";
 		contentTypeMapping[".php"] = "application/x-httpd-php";
+		contentTypeMapping[".c"] = "text/html";
 		contentTypeMapping[""] = "application/octet-stream";
 		return (contentTypeMapping);
 	};

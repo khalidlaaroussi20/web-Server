@@ -115,6 +115,7 @@ public:
     }
 
     bool is_open(){return file.is_open();}
+
 };
 
 #endif

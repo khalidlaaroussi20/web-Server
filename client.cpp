@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/15 17:24:36 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/16 16:27:35 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ Client::Client()
 	requestHeaderDone = false;
 	requestHandler = nullptr;
 	body_done = false;
-	bestLocationMatched= nullptr;
+	bestLocationMatched = nullptr;
 }
 
 

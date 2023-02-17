@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/15 17:01:23 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/16 16:36:58 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ class Server
 		void  tryOpenRessource(std::string &path, Client &client, Location &bestLocation)
 		{
 			path = getPathRessource(bestLocation ,client.path);
+			std::cout << "pathsss = " << path << std::endl;
 			if (path.find("..") != std::string::npos)
 			{
 				client.responseCode = BAD_REQUEST;
@@ -221,17 +222,11 @@ class Server
 			std::string extention = getExtention(path);
 			std::string contentType =  ContentTypes::getContentType(extention);
 			headerRespone += StaticResponseMessages::getMessageResponseCode(client.responseCode);
-			if (client.responseCode == METHOD_NOT_ALLOWED)
+			if (client.responseCode == MOVED_PERMANETLY)
 			{
-				headerRespone += "\r\nAllow: ";
-				std::map <std::string , bool > allowedMethod =  bestLocation.getAllowMethods();
-				for (auto xs : allowedMethod)
-					headerRespone += xs.first + ", ";
+				headerRespone += "\r\nLocation: " + bestLocation.getRedirect();
 			}
-			else if (client.responseCode == MOVED_PERMANETLY)
-				headerRespone += "\r\nlocation: " + bestLocation.getRedirect();
 			headerRespone += "\r\nConnection: close\r\nContent-Length: " + std::to_string(fileSize) +  "\r\nContent-Type: " + contentType + "\r\n\r\n";
-
 			return (headerRespone);
 		}
 		
@@ -241,13 +236,16 @@ class Server
 			client.fp = fopen(path.c_str(), "rb");
 		}
 
-
+		bool isRedirection(StatusCode &responseCode) const
+		{
+			return (responseCode >= 300 && responseCode < 400);
+		}
 		bool sendHeaderResponse(Client &client, fd_set &reads, fd_set &writes, int &clientIdx)
 		{
 			std::string path = client.path;
 			ServerConfigs serverConfig = client.getRequestConfigs();
-			Location &bestLocationMatched =  getBestMatchedLocation(client.path);
-			std::cout << "request Path = " << path << " bestLocation : " << bestLocationMatched.getRoute() << " isErrorHappend = " << client.sendError << std::endl;
+			Location &bestLocationMatched = *client.bestLocationMatched;
+			std::cout << "request Path = " << path << " bestLocation : " << client.bestLocationMatched->getRoute() << " isErrorHappend = " << client.sendError << std::endl;
 			if (!client.sendError)
 			{
 				if (bestLocationMatched.isMethodAllowed(client.requestHandler->getMethod()))
@@ -259,7 +257,8 @@ class Server
 				setPathError(client, path);
 			std::string responseHeader = getHeaderResponse(client, path, bestLocationMatched);
 			std::cout << responseHeader << std::endl;	
-			if (send(client.socket, responseHeader.c_str(), responseHeader.length(), 0)  == -1 || client.requestHandler->getMethod() == "HEAD")
+			if (send(client.socket, responseHeader.c_str(), responseHeader.length(), 0)  == -1 ||\
+			 		client.requestHandler->getMethod() == "HEAD")// || isRedirection(client.responseCode))
 			{
 				fclose(client.fp);
 				client.fp = nullptr;

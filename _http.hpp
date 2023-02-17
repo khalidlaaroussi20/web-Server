@@ -52,6 +52,15 @@ struct Http{
 				client.factoryRequestHandlerSetter();
 			// parse request
 			client.requestHandler->parseRequestHeader(header);
+			std::string &path = client.requestHandler->getPath();
+
+			if (!client.requestHandler->isValidPath())
+			{
+				client.set_response_code(BAD_REQUEST);
+				client.finished_body();
+			}
+			// 
+
 			// set server config
 			// loop through servers and add server configs of the matched one from the request in the client
 			ServerConfigs *requestConfigs;
@@ -70,7 +79,7 @@ struct Http{
 				}
 			}
 			client.set_request_configs(requestConfigs);
-			std::string &path = client.requestHandler->getPath();
+			
 			client.path = new char[path.length() + 1];
 			strcpy(client.path, path.c_str());
 			client.setBestLocationMatched();
