@@ -19,7 +19,10 @@ struct Http{
             _writes(writes), _clients(clients), _server(server)
     {};
 
-    void getRequest(int Client_Number, ServerMap& SameSocketServers)
+
+
+
+    void getRequest(int Client_Number, ServerMap& Servers)
     {
 		// std::cout <<"getRequest\n";
 		Client &client = _clients[Client_Number];
@@ -52,47 +55,38 @@ struct Http{
 				client.factoryRequestHandlerSetter();
 			// parse request
 			client.requestHandler->parseRequestHeader(header);
-			std::string &path = client.requestHandler->getPath();
 
-			if (!client.requestHandler->isValidPath())
+			if (client.requestHandler->isErrorOccured())
 			{
 				client.set_response_code(BAD_REQUEST);
 				client.finished_body();
 			}
-			// 
-
-			// set server config
-			// loop through servers and add server configs of the matched one from the request in the client
-			ServerConfigs *requestConfigs;
+			else //parsing done successfuly)
 			{
-				A_Request::headersType headers = client.requestHandler->getHeaders();
-				std::string host = headers.at("Host")[0];
-
-				requestConfigs = &((SameSocketServers.begin())->second.getServerConfigs());
-				for (auto &serv : SameSocketServers)
+				std::string &path = client.requestHandler->getPath();
+				if (!client.requestHandler->isValidPath())
 				{
-					if (host == serv.first)
-					{
-						requestConfigs = &(serv.second.getServerConfigs());
-						break ;
-					}
+					client.set_response_code(BAD_REQUEST);
+					client.finished_body();
+				}
+				else // set server config
+				{
+					client.setServerConfigs(Servers);
+					client.path = path;
+					client.setBestLocationMatched();
+					client.requestHeaderDone = true;
+					if (client.requestHandler->isRequestWellFormed(client) == false)
+						client.finished_body();	
 				}
 			}
-			client.set_request_configs(requestConfigs);
-			
-			client.path = new char[path.length() + 1];
-			strcpy(client.path, path.c_str());
-			client.setBestLocationMatched();
-			client.requestHeaderDone = true;
-			if (client.requestHandler->isRequestWellFormed(client) == false)
-			{
-				client.finished_body();
-				return ;
-			}
-		
+			client.tryOpenRessource();
 		}
-		if (client.sendError == false && client.requestHandler)
+
+		if (client.sendError)
+			client.finished_body();
+		else if (client.requestHandler)	//handle request
 		{
+			std::cout << "body Handler\n";
 			client.requestHandler->handleRequest(body, sz, client);
 			if(client.body_is_done())
 				std::cout << "body_done " << std::endl;
@@ -105,7 +99,7 @@ struct Http{
     {
 		Client &client = _clients[Client_Number];
 		bool isHeaderSendSuccefuly = true;
-        if (client.fp == nullptr)
+        if (client.isHeaderSend == false)
 		{
             isHeaderSendSuccefuly = _server.sendHeaderResponse(client, _reads, _writes, Client_Number);
 		}

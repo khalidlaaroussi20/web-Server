@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 14:53:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/17 15:24:32 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/19 16:51:15 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,29 @@ std::string &A_Request::getMethod()
 {
 	return (_method);
 }
+
+std::string &A_Request::getQuery()
+{
+	return (_query);
+}
+
+
+bool A_Request::isErrorOccured() const
+{
+	return (_isErrorOccurs);
+}
+
+
+std::string A_Request::getHeaderCgiValue(std::string header)
+{
+	std::string value;
+	auto it = _headersForCgi.find(header);
+	if (it != _headersForCgi.end())
+		value = it ->second;
+	return (value);
+}
+
+
 
 
 void A_Request::setHeadersForCgi(std::string &request)
@@ -56,9 +79,11 @@ void A_Request::setHeadersRequest(std::string &request)
 {
 	std::string keysDelimeters = ":";
 	std::string valuesDelimeters = ";,=:";
+	std::cout << request << std::endl;
 	HeaderParser parser(request);
 	_method = parser.getNextToken(keysDelimeters);
 	_path = parser.getNextToken(keysDelimeters);
+	//std::cout << "path = " << _path << std::endl;
 	_httpVersion =  parser.getNextToken(keysDelimeters);
 
 	while (!parser.isDoneParsing())
@@ -66,7 +91,7 @@ void A_Request::setHeadersRequest(std::string &request)
 		std::string requestHeader = parser.getNextToken(keysDelimeters);
 		if (!requestHeader.empty())
 		{
-			std::vector < std::string >  values = parser.getValuesCurrToken(valuesDelimeters);
+			std::vector < std::string >  values = parser.getValuesCurrToken(valuesDelimeters, _isErrorOccurs);
 			_headers[requestHeader] = values;
 			if (requestHeader == "Content-Type")
 			{
@@ -130,6 +155,11 @@ bool A_Request::isRequestWellFormed(Client &client)
 		client.set_response_code(BAD_REQUEST);
 		return (false);
 	}
+	if (!client.bestLocationMatched->isMethodAllowed(client.requestHandler->getMethod()))
+	{
+		client.set_response_code(METHOD_NOT_ALLOWED);
+		return (false);
+	}
 	if (_path.length() > MAX_URI_SIZE)
 	{
 		client.set_response_code(REQUEST_URI_TOO_LONG);
@@ -157,4 +187,21 @@ bool A_Request::isValidPath()
 		}
 	}
 	return (true);
+}
+
+
+
+std::string A_Request::getPathRessource(Location &bestLocationMatched)
+{
+	std::string currPath = bestLocationMatched.getRoot();
+	if (currPath[currPath.length() - 1] != '/')
+		currPath += "/";
+	currPath += _path.substr(bestLocationMatched.getRoute().length(), _path.length());
+	return (currPath); 
+}
+
+
+void A_Request::addHeaderToCgi(const std::string headerKey, const std::string headerValue)
+{
+	_headersForCgi[headerKey] = headerValue;
 }

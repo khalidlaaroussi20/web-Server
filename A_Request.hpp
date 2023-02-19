@@ -15,6 +15,7 @@
 
 #include "includes.hpp"
 #include "static/StatusCode.hpp"
+#include "parsing/configParser/Location.hpp"
 #include "parsing/requestParser/HeaderParser.hpp"
 
 class Client;
@@ -23,6 +24,7 @@ class A_Request
 {
 	protected:
 		std::string 											_path;
+		std::string												_query;
 		std::string 											_method;
 		std::string												_httpVersion;
 		std::map<std::string , std::vector < std::string > >	_headers;
@@ -33,6 +35,7 @@ public:
 	typedef std::map<std::string , std::vector < std::string > > headersType;
 	A_Request();
 	std::string &getPath();
+	std::string &getQuery();
 	
 	std::string &getMethod();
 
@@ -54,6 +57,15 @@ public:
 	virtual void handleRequest(std::string &body, size_t size, Client &client) = 0;
 
 	bool isValidPath();
+
+	bool isErrorOccured() const;
+
+	std::string getPathRessource(Location &bestLocationMatched);
+
+	void addHeaderToCgi(std::string headerKey, std::string headerValue);
+
+	std::string getHeaderCgiValue(std::string header);
+	
 	
 	virtual ~A_Request()
 	{

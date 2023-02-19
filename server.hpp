@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/16 16:36:58 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/19 17:28:56 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,15 +105,6 @@ class Server
 			return (_serverConfigs.getBestMatchedLocation(path));
 		}
 		
-		std::string getPathRessource(Location &bestLocationMatched, std::string path)
-		{
-			std::string currPath = bestLocationMatched.getRoot();
-			if (currPath[currPath.length() - 1] != '/')
-				currPath += "/";
-			currPath += path.substr(bestLocationMatched.getRoute().length(), path.length());
-			//std::cout << "currPath1 = " << currPath << std::endl;
-			return (currPath); 
-		}
 
 		std::string genereteRandomName()
 		{
@@ -122,88 +113,7 @@ class Server
 			ss << ms;
 			return (ss.str());
 		}
-
-		void listDirectoyIntoFile(Client &client, std::string &path)
-		{
-			
-			DIR* dir = opendir(path.c_str());
-			if (dir == NULL) {
-				client.set_response_code(NOT_FOUND);
-				return ;
-			}
-			std::string fileName = genereteRandomName() + ".html";
-			std::string filePath = "/tmp/" +  fileName;
-			FILE *listDir = fopen(filePath.c_str(),"wb");
-			if (listDir == nullptr)
-			{
-				std::cout << "failed open file\n\n";
-				return ;
-			}
-			dirent* entry = readdir(dir);
-			std::string fileContent = "<html><head><title>Example Page</title></head><body><h1>List Files : </h1><ul>";
-			
-			while (entry != NULL) {
-				std::string url = client.requestHandler->getPath();
-				if (url[url.length() - 1] != '/')
-					url += "/";
-				url += entry->d_name;
-				fileContent += "<li><a href=" + url  + ">" + entry->d_name +   "</a></li><br>";
-				entry = readdir(dir);
-			}
-			closedir(dir);
-			fileContent += "</body></html>";
-			fputs(fileContent.c_str(),listDir );
-			fclose(listDir);
-			path = filePath;
-			client.fp  = fopen(filePath.c_str(),"rb");
-		}
-
-		void  tryOpenRessource(std::string &path, Client &client, Location &bestLocation)
-		{
-			path = getPathRessource(bestLocation ,client.path);
-			std::cout << "pathsss = " << path << std::endl;
-			if (path.find("..") != std::string::npos)
-			{
-				client.responseCode = BAD_REQUEST;
-				return ;			
-			}
-			struct stat s;
-			if( stat(path.c_str(),&s) == 0 )
-			{
-				if( s.st_mode & S_IFDIR )
-				{
-					std::vector <std::string> &indexes =  bestLocation.getIndexes();
-					for (int i = 0; i < indexes.size();i++)
-					{
-						std::string fullPath = path + "/" + indexes[i];
-						if (fullPath.length() < 100)
-						{
-							client.fp = fopen(fullPath.c_str(), "rb");
-							if (client.fp)
-							{
-								path = fullPath.c_str();
-								break;
-							}
-						}
-					}
-					if (!client.fp)
-					{
-						if (!bestLocation.getAutoIndex())
-						{
-							client.set_response_code(FORBIDDEN);
-							return ;
-						}
-						listDirectoyIntoFile(client, path);
-					}	
-				}
-				else if( s.st_mode & S_IFREG )
-				{
-					client.fp = fopen(path.c_str(), "rb");
-				}
-			}
-			if (client.fp == nullptr)
-				client.responseCode = NOT_FOUND;
-		}
+		
 
 		std::string getExtention(std::string &str)
 		{
@@ -213,28 +123,24 @@ class Server
 				extention = str.substr(pos, str.length());
 			return (extention);
 		}
-		std::string  getHeaderResponse(Client &client, std::string &path, Location &bestLocation)
+		std::string  getHeaderResponse(Client &client)
 		{
 			std::string headerRespone = client.requestHandler->getHttpVersion() + " " +  std::to_string(client.responseCode);
 			fseek(client.fp, 0L, SEEK_END);
 			size_t fileSize = ftell(client.fp);
 			rewind(client.fp);
-			std::string extention = getExtention(path);
+			std::string extention = getExtention(client.path);
 			std::string contentType =  ContentTypes::getContentType(extention);
 			headerRespone += StaticResponseMessages::getMessageResponseCode(client.responseCode);
 			if (client.responseCode == MOVED_PERMANETLY)
 			{
-				headerRespone += "\r\nLocation: " + bestLocation.getRedirect();
+				headerRespone += "\r\nLocation: " + client.bestLocationMatched->getRedirect();
 			}
 			headerRespone += "\r\nConnection: close\r\nContent-Length: " + std::to_string(fileSize) +  "\r\nContent-Type: " + contentType + "\r\n\r\n";
 			return (headerRespone);
 		}
 		
-		void setPathError(Client &client, std::string &path)
-		{
-			path = client.getRequestConfigs().getErrorPage(client.responseCode);
-			client.fp = fopen(path.c_str(), "rb");
-		}
+	
 
 		bool isRedirection(StatusCode &responseCode) const
 		{
@@ -242,20 +148,10 @@ class Server
 		}
 		bool sendHeaderResponse(Client &client, fd_set &reads, fd_set &writes, int &clientIdx)
 		{
-			std::string path = client.path;
-			ServerConfigs serverConfig = client.getRequestConfigs();
-			Location &bestLocationMatched = *client.bestLocationMatched;
-			std::cout << "request Path = " << path << " bestLocation : " << client.bestLocationMatched->getRoute() << " isErrorHappend = " << client.sendError << std::endl;
-			if (!client.sendError)
-			{
-				if (bestLocationMatched.isMethodAllowed(client.requestHandler->getMethod()))
-					tryOpenRessource( path, client, bestLocationMatched);
-				else
-					client.set_response_code(METHOD_NOT_ALLOWED);
-			}
-			if (client.fp == nullptr)
-				setPathError(client, path);
-			std::string responseHeader = getHeaderResponse(client, path, bestLocationMatched);
+			
+			if (client.sendError)//set path to the correct error page
+				client.setPathError();
+			std::string responseHeader = getHeaderResponse(client);
 			std::cout << responseHeader << std::endl;	
 			if (send(client.socket, responseHeader.c_str(), responseHeader.length(), 0)  == -1 ||\
 			 		client.requestHandler->getMethod() == "HEAD")// || isRedirection(client.responseCode))
@@ -265,6 +161,7 @@ class Server
 				_clients.dropClient(clientIdx, reads, writes);
 				return (false);
 			}
+			client.isHeaderSend = true;
 			return (true);
 		}
 
@@ -290,7 +187,7 @@ class Server
 		void addClient(SOCKET &maxSocketSoFar, fd_set &reads, fd_set &writes)
 		{
 			Client newClient;
-			newClient.socket = accept(_serverSocket, (struct sockaddr *)&(newClient.address), &newClient.address_length);
+			newClient.socket = accept(_serverSocket, (struct sockaddr *)&(newClient.addresStorage), &newClient.address_length);
 			 if (!ISVALIDSOCKET(newClient.socket)) {
                 fprintf(stderr, "accept() failed. (%d)\n",
                         GETSOCKETERRNO());
@@ -304,22 +201,6 @@ class Server
 			FD_SET(newClient.socket, &reads);
 			FD_SET(newClient.socket, &writes);
 			maxSocketSoFar = std::max(maxSocketSoFar, newClient.socket);
-		}
-
-		void send_400(Client &client, fd_set &reads, fd_set &writes, int &clientIdx) {
-			const char *c400 = "HTTP/1.1 400 Bad Request\r\n"
-				"Connection: close\r\n"
-				"Content-Length: 11\r\n\r\nBad Request";
-			send(client.socket, c400, strlen(c400), 0);
-			_clients.dropClient(clientIdx, reads, writes);
-		}
-		
-		void send_404(Client &client, fd_set &reads, fd_set &writes, int &clientIdx) {
-			 const char *c404 = "HTTP/1.1 404 Not Found\r\n"
-        	"Connection: close\r\n"
-        	"Content-Length: 9\r\n\r\nNot Found";
-			send(client.socket, c404, strlen(c404), 0);
-			_clients.dropClient(clientIdx, reads, writes);
 		}
 
 		void closeHost()

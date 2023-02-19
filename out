@@ -1,21 +1,945 @@
+host = 127.0.0.1 serv = 3030
 Creating socket...
 Binding socket to local address...
 Listening...
 New connection from 7.
+GET / HTTP/1.1
+aaaaaaa: 
+Content-Length: 
+User-Agent: PostmanRuntime/7.31.0
+Accept: */*
+Postman-Token: c896fe9b-ec83-4e5a-9c01-6852266e3460
+Host: localhost:3030
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
 Accept :  */*
 Accept-Encoding :  gzip, deflate, br
 Connection :  keep-alive
-Host :  localhost3031
-Postman-Token :  d0cdcc58-db5f-4844-a6ef-29b70266f6d5
+Content-Length :  
+Host :  localhost3030
+Postman-Token :  c896fe9b-ec83-4e5a-9c01-6852266e3460
 User-Agent :  PostmanRuntime/7.31.0
+aaaaaaa :  
 findedd
 len = 1 route = / length = 1
+body Handler
+here
 body_done 
-request Path = / bestLocation : / isErrorHappend = 0
-pathsss = ./public/
-HTTP/1.1 403 Forbidden 
+HTTP/1.1 200 OK 
 Connection: close
-Content-Length: 265
+Content-Length: 615
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET / HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: none
+Sec-Fetch-User: ?1
+Accept :  text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Sec-Fetch-Dest :  document
+Sec-Fetch-Mode :  navigate
+Sec-Fetch-Site :  none
+Sec-Fetch-User :  ?1
+Upgrade-Insecure-Requests :  1
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 1 route = / length = 1
+body Handler
+here
+body_done 
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 615
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /index.html HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Accept :  text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  document
+Sec-Fetch-Mode :  navigate
+Sec-Fetch-Site :  same-origin
+Sec-Fetch-User :  ?1
+Upgrade-Insecure-Requests :  1
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 11 route = / length = 1
+body Handler
+here
+body_done 
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 330
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /smile.png HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/index.html
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/index.html
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 10 route = / length = 1
+body Handler
+here
+body_done 
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 6005
+Content-Type: image/png
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/index.html
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/index.html
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /errors HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Accept :  text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  document
+Sec-Fetch-Mode :  navigate
+Sec-Fetch-Site :  same-origin
+Sec-Fetch-User :  ?1
+Upgrade-Insecure-Requests :  1
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 7 route = / length = 1
+body Handler
+here
+body_done 
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 808
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/errors
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/errors
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+New connection from 9.
+dropping client 0
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /h.h.c HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Accept :  text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  document
+Sec-Fetch-Mode :  navigate
+Sec-Fetch-Site :  same-origin
+Sec-Fetch-User :  ?1
+Upgrade-Insecure-Requests :  1
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 6 route = / length = 1
+body Handler
+here
+body_done 
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 27
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/h.h.c
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/h.h.c
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /t HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Accept :  text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  document
+Sec-Fetch-Mode :  navigate
+Sec-Fetch-Site :  same-origin
+Sec-Fetch-User :  ?1
+Upgrade-Insecure-Requests :  1
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 2 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/t
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/t
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /uploads HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Accept :  text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  document
+Sec-Fetch-Mode :  navigate
+Sec-Fetch-Site :  same-origin
+Sec-Fetch-User :  ?1
+Upgrade-Insecure-Requests :  1
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 8 route = / length = 1
+body Handler
+here
+body_done 
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 168
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/uploads
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/uploads
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /%C3%99%C2%81.txt HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Accept :  text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  document
+Sec-Fetch-Mode :  navigate
+Sec-Fetch-Site :  same-origin
+Sec-Fetch-User :  ?1
+Upgrade-Insecure-Requests :  1
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 17 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/%C3%99%C2%81.txt
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/%C3%99%C2%81.txt
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /errors HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Accept :  text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  document
+Sec-Fetch-Mode :  navigate
+Sec-Fetch-Site :  same-origin
+Sec-Fetch-User :  ?1
+Upgrade-Insecure-Requests :  1
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 7 route = / length = 1
+body Handler
+here
+body_done 
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 808
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/errors
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/errors
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /%C3%99%C2%81.txt HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Upgrade-Insecure-Requests: 1
+Sec-Fetch-Dest: document
+Sec-Fetch-Mode: navigate
+Sec-Fetch-Site: same-origin
+Sec-Fetch-User: ?1
+Accept :  text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  document
+Sec-Fetch-Mode :  navigate
+Sec-Fetch-Site :  same-origin
+Sec-Fetch-User :  ?1
+Upgrade-Insecure-Requests :  1
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 17 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/%C3%99%C2%81.txt
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/%C3%99%C2%81.txt
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /favicon.ico HTTP/1.1
+Host: localhost:3030
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:109.0) Gecko/20100101 Firefox/110.0
+Accept: image/avif,image/webp,*/*
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Referer: http://localhost:3030/
+Sec-Fetch-Dest: image
+Sec-Fetch-Mode: no-cors
+Sec-Fetch-Site: same-origin
+Accept :  image/avif,image/webp,*/*
+Accept-Encoding :  gzip, deflate, br
+Accept-Language :  en-US,en;q=0.5
+Connection :  keep-alive
+Host :  localhost3030
+Referer :  http//localhost3030/
+Sec-Fetch-Dest :  image
+Sec-Fetch-Mode :  no-cors
+Sec-Fetch-Site :  same-origin
+User-Agent :  Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv109.0) Gecko/20100101 Firefox/110.0
+findedd
+len = 12 route = / length = 1
+here
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
 Content-Type: text/html
 
 

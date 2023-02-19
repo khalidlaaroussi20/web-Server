@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 13:04:37 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/16 16:22:37 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/19 16:07:28 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ class Location
 		std::string 										_root;
 		std::vector <std::string> 							_indexes;
 		std::string 										_uploadPass;
-		std::vector < std::pair <Extention, std::string > > _cgis;
+		std::map < Extention, std::string  > 				_cgis;
 	public :
 		Location()
 		{
@@ -70,7 +70,7 @@ class Location
 			return (_uploadPass);
 		}
 
-		std::vector < std::pair <Extention, std::string > >  &getCgis()
+		std::map < Extention, std::string  >   &getCgis()
 		{
 			return (_cgis);
 		}
@@ -121,7 +121,7 @@ class Location
 			_uploadPass = uploadPass;
 		}
 
-		void setCgis(std::vector < std::pair <Extention, std::string > > cgis)
+		void setCgis(std::map < Extention, std::string  >  &cgis)
 		{
 			_cgis = cgis;
 		}
@@ -131,9 +131,9 @@ class Location
 			return  (!(_route.empty() || _root.empty() || _indexes.empty()));
 		}
 
-		void addcgi(Extention lang, std::string path)
+		void addcgi(Extention &lang, std::string &path)
 		{
-			_cgis.push_back(std::make_pair(lang, path));	
+			_cgis[lang] = path;
 		}
 
 

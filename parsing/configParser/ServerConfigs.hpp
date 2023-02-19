@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:17:55 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/15 17:40:00 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/19 15:53:44 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,9 +136,10 @@ class ServerConfigs
 			getnameinfo(peer_address->ai_addr, peer_address->ai_addrlen,
 					buffHost, sizeof(buffHost),
 					buffServ, sizeof(buffServ),
-					NI_NUMERICHOST);
+					NI_NUMERICHOST | NI_NUMERICSERV);
 			_host = buffHost;
 			_serv = buffServ;
+			std::cout << "host = " << _host  << " serv = " << _serv << std::endl;
 		}
 
 		void setServerName(std::string serverName)

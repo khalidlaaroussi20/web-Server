@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/17 15:26:18 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/19 14:52:19 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,8 @@ class HeaderParser
 			return (nextToken);
 		};
 
+		
+
 		std::string getHeaderValue()
 		{
 			std::string nextToken = "";
@@ -111,7 +113,7 @@ class HeaderParser
 		}
 
 
-		std::vector <std::string> getValuesCurrToken(std::string &delimeters)
+		std::vector <std::string> getValuesCurrToken(std::string &delimeters, bool &isErrorOccurs)
 		{
 			std::vector <std::string> values;
 			skipSpaces();
@@ -128,6 +130,8 @@ class HeaderParser
 						values.push_back(nextToken);
 				}
 			}
+			else
+				isErrorOccurs = true;
 			return (values);
 		};
 

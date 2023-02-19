@@ -2,10 +2,14 @@
 #define _FILE_SYSTEM_
 
 //default var// enumeration
+#include <unistd.h>
 
 #include <ios>
 #include <fstream>
+#include "includes.hpp"
 
+
+class Client;
 enum Mode {
     READ,
     WRITE,
@@ -21,19 +25,6 @@ class FileSystem{
     std::fstream file;
     std::string extension;
 
-    std::string generateRandomString(int length)
-    {
-        std::string result;
-        result.reserve(length);
-        static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-
-        std::srand(std::time(nullptr));
-        for (int i = 0; i < length; ++i)
-        {
-            result.push_back(alphanum[std::rand() % (sizeof(alphanum) - 1)]);
-        }
-        return result;
-    }
 
 public:
     FileSystem(){};
@@ -116,6 +107,31 @@ public:
 
     bool is_open(){return file.is_open();}
 
+	static std::string generateRandomString(int length)
+    {
+        std::string result;
+        result.reserve(length);
+        static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+        std::srand(std::time(nullptr));
+        for (int i = 0; i < length; ++i)
+        {
+            result.push_back(alphanum[std::rand() % (sizeof(alphanum) - 1)]);
+        }
+        return result;
+    }
+
+	static std::string get_current_dir() 
+	{
+		std::string current_working_dir;
+		char buff[1024]; //create string buffer to hold path
+		if (getcwd(buff, 1024 ) != NULL)
+			current_working_dir = buff;
+		return (current_working_dir);
+	}
+
 };
+
+void listDirectory(Client &client, std::string &path);
 
 #endif
