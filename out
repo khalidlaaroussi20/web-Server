@@ -3,16 +3,100 @@ Creating socket...
 Binding socket to local address...
 Listening...
 New connection from 7.
+DELETE /uploads/a.txt HTTP/1.1
+User-Agent: PostmanRuntime/7.31.0
+Accept: */*
+Postman-Token: 73c98267-fc86-4c74-baf0-273c207274c3
+Host: localhost:3030
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+body_done 
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /uploads/ HTTP/1.1
+User-Agent: PostmanRuntime/7.31.0
+Accept: */*
+Postman-Token: 8c46c233-c272-4b20-9ab9-6aacca1da323
+Host: localhost:3030
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+ttt here << path = ./public/uploads/ indexPath = ./public/uploads/
+open Dir  = ./public/uploads/
+body_done 
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 400
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+GET /uploads/a.txt HTTP/1.1
+User-Agent: PostmanRuntime/7.31.0
+Accept: */*
+Postman-Token: de6e8a6a-ebe7-4ead-be43-5f12ea38c643
+Host: localhost:3030
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+ttt here << path = ./public/uploads/a.txt indexPath = ./public/uploads/a.txt
+body_done 
+HTTP/1.1 200 OK 
+Connection: close
+Content-Length: 7
+Content-Type: text/plain
+
+
+dropping client 0
+New connection from 7.
+DELETE /uploads/a.txt HTTP/1.1
+User-Agent: PostmanRuntime/7.31.0
+Accept: */*
+Postman-Token: 8420f9de-221e-4319-ba0b-4264c8383cb7
+Host: localhost:3030
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+path to delete = ./public/uploads/a.txt
+is file
+body_done 
+HTTP/1.1 204
+Connection: close
+Content-Length: 271
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
+DELETE /uploads/a.txt HTTP/1.1
+User-Agent: PostmanRuntime/7.31.0
+Accept: */*
+Postman-Token: fd0f4e2b-22c8-4b93-9955-97284d1f347c
+Host: localhost:3030
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+body_done 
+HTTP/1.1 404 Not Found 
+Connection: close
+Content-Length: 274
+Content-Type: text/html
+
+
+dropping client 0
+New connection from 7.
 DELETE /uploads HTTP/1.1
 User-Agent: PostmanRuntime/7.31.0
 Accept: */*
-Postman-Token: 83ec3d1c-ba8d-462c-a6c8-a712b0beb31c
+Postman-Token: bb1ea8af-8644-4114-9cfa-4d269488571e
 Host: localhost:3030
 Accept-Encoding: gzip, deflate, br
 Connection: keep-alive
 path to delete = ./public/uploads
 is dir
-deleted succes!!
 body_done 
 HTTP/1.1 204
 Connection: close

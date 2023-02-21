@@ -84,23 +84,17 @@ struct Http{
 			{
 				if (client.isRequestForCgi())
 				{
-					std::cout << "********cgi  found*******\n\n";
 					client.setupHeadersForCgi(client.cgiPath);
 					client.requestHandler->printCgisHeaders();
 				}
-				client.tryOpenRessource();
 			}
 		}
-
+		// cgi for get request  i don't know if i should add indexes 
 		if (client.sendError)
 		{
-			if (client.requestHandler->getMethod() != "DELETE" || client.responseCode != FORBIDDEN)
-			{
-				client.finished_body();
-				return ;
-			}
+			client.finished_body();
 		}
-		if (client.isForCgi)
+		else if (client.isForCgi)
 		{
 			
 		}

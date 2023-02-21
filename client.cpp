@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/21 16:13:07 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/21 17:23:31 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,7 @@ bool Client::body_is_done()
 }
 
 
+
 void Client::setServerConfigs( ServerMap& servers)
 {
 	A_Request::headersType headers = requestHandler->getHeaders();
@@ -146,48 +147,35 @@ void Client::setPathRessource()
 	path = requestHandler->getPathRessource(bestLocation);
 }
 
+
 void Client::tryOpenRessource()
 {
 	if (!sendError)
 	{
+		std::cout << "ttt here << path = " << path << " indexPath = " << indexPath << std::endl;;
 		Location &bestLocation = *bestLocationMatched;
-		struct stat s;
-		if( stat(path.c_str(),&s) == 0 )
+
+		if (FileSystem::isDirectory(path.c_str()))
 		{
-			if( s.st_mode & S_IFDIR )
-			{
-				std::vector <std::string> &indexes =  bestLocation.getIndexes();
-				for (int i = 0; i < indexes.size();i++)
-				{
-					std::string fullPath = path + "/" + indexes[i];
-					if (fullPath.length() < 100)
-					{
-						fp = fopen(fullPath.c_str(), "rb");
-						if (fp)
-						{
-							path = fullPath;
-							break;
-						}
-					}
-				}
-				if (!fp)
-				{
-					if ((bestLocation.getAutoIndex()) && requestHandler ->getMethod() != "DELETE")
-						listDirectoryIntoFile(path);
-					else
-						set_response_code(FORBIDDEN);
-				}	
-			}
-			else if( s.st_mode & S_IFREG )
-				fp = fopen(path.c_str(), "rb");
-		}
-		if (fp == nullptr && !sendError)
-			set_response_code(NOT_FOUND);
+			if (indexPath != path)
+				fp = fopen(indexPath.c_str(), "rb");	
+			if (fp)
+				path = indexPath;
+			else if ((bestLocation.getAutoIndex()))
+				listDirectoryIntoFile(path);
+			else
+				set_response_code(FORBIDDEN);
+		}	
+		else
+			fp = fopen(path.c_str(), "rb");
 	}
+	if (fp == nullptr && !sendError)
+		set_response_code(NOT_FOUND);
 }
 
 void Client::listDirectoryIntoFile(std::string &path)
 {
+	std::cout << "open Dir  = "<< path << std::endl;
 	DIR* dir = opendir(path.c_str());
 	if (dir == NULL) {
 		set_response_code(NOT_FOUND);
@@ -218,13 +206,33 @@ void Client::listDirectoryIntoFile(std::string &path)
 	fileContent += "</body></html>";
 	fputs(fileContent.c_str(),listDir );
 	fclose(listDir);
-	//path = filePath;
+	path = filePath;
 	fp  = fopen(filePath.c_str(),"rb");
+}
+
+void Client::setIndexPath()
+{
+	Location &bestLocation = *bestLocationMatched;
+	if (FileSystem::isDirectory(path.c_str()))
+	{
+		std::vector <std::string> &indexes =  bestLocation.getIndexes();
+		for (int i = 0; i < indexes.size();i++)
+		{
+			std::string fullPath = path + "/" + indexes[i];
+			if (FileSystem::file_exists(fullPath.c_str()))
+			{
+				indexPath = fullPath;
+				break;
+			}
+		}
+	}
 }
 
 bool Client::isRequestForCgi()
 {
-	std::string extention = FileSystem::getExtention(path, true);
+	indexPath = path;
+	setIndexPath();
+	std::string extention = FileSystem::getExtention(indexPath, true);
 	std::string pathCgi = bestLocationMatched->getPathCgi(extention);
 	if (!pathCgi.empty())
 	{
@@ -241,11 +249,11 @@ void Client::setupHeadersForCgi(std::string &cgiPath)
 	requestHandler->addHeaderToCgi("server_protocol", requestHandler->getHttpVersion());
 	requestHandler->addHeaderToCgi("server_port", serverConfigs->getServ());
 	requestHandler->addHeaderToCgi("request_method", requestHandler->getMethod());
-	requestHandler->addHeaderToCgi("path_info", path);
+	requestHandler->addHeaderToCgi("path_info", indexPath);
 	std::string fullPath = FileSystem::get_current_dir();
 	if (cgiPath[0] != '/')
 		fullPath += '/';
-	fullPath += path;
+	fullPath += indexPath;
 	requestHandler->addHeaderToCgi("path_translated", fullPath);
 	requestHandler->addHeaderToCgi("query_string", requestHandler->getQuery());
 	requestHandler->addHeaderToCgi("remote_addr", addr);

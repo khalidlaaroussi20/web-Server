@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:06:20 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/20 19:45:06 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/21 16:45:51 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ class Client
 		bool					isHeaderSend;
 		bool					isForCgi;
 		std::string				cgiPath;
+		std::string				indexPath;
 
 
 		Client();
@@ -90,6 +91,8 @@ class Client
 		void setClientInfo();
 
 		bool isRequestForCgi();
+
+		void setIndexPath();
 
 };
 
