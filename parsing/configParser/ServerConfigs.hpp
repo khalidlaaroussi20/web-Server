@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:17:55 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/19 15:53:44 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/20 16:27:12 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ class ServerConfigs
 		{
 			_errorPages = StaticErrorPages::ERROR_PAGES;
 		}
+		
 		Location getDefaultLocation()
 		{
 			Location defaultLocation = Location();
@@ -88,12 +89,12 @@ class ServerConfigs
 			return (_serverName);
 		}
 
-		std::map<int , std::string> &AllgetErrorPages()
+		std::map<int , std::string> &AllgetResponsePages()
 		{
 			return (_errorPages);
 		}
 
-		std::string &getErrorPage(int errorCode)
+		std::string &getResponsePage(int errorCode)
 		{
 			// for (auto xs : _errorPages)
 			// 	std::cout << xs.first << " " << xs.second << std::endl;

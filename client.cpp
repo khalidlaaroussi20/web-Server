@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/19 17:29:42 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/21 16:13:07 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ Client::Client()
 	requestHandler = nullptr;
 	body_done = false;
 	bestLocationMatched = nullptr;
+	isForCgi = false;
 }
 
 
@@ -43,7 +44,7 @@ Client::Client(SOCKET socket)
 	requestHandler = nullptr;
 	body_done = false;
 	bestLocationMatched= nullptr;
-
+	isForCgi = false;
 }
 
 
@@ -79,7 +80,7 @@ void Client::factoryRequestHandlerSetter()
 	else if (strncmp("POST /", request, 5) == 0)
 		requestHandler = new PostRequest();
 	else if (strncmp("DELETE /", request, 5) == 0)
-		requestHandler = new GetRequest();
+		requestHandler = new DeleteRequest();
 	else
 	{
 		requestHandler = new GetRequest();
@@ -97,7 +98,6 @@ void Client::set_request_configs(ServerConfigs	*serverConfigs_)
 void Client::finished_body()
 {
 	body_done = true;
-	std::cout << "here\n";
 };
 
 void Client::setBestLocationMatched()
@@ -131,22 +131,26 @@ void Client::setServerConfigs( ServerMap& servers)
 
 }
 
-void Client::setPathError()
+void Client::setPathResponse()
 {
 	if (fp)
 		fclose(fp);
-	std::string errorPath = serverConfigs->getErrorPage(responseCode);
+	std::string errorPath = serverConfigs->getResponsePage(responseCode);
 	path = errorPath;
 	fp = fopen(path.c_str(), "rb");
 }
 
+void Client::setPathRessource()
+{
+	Location &bestLocation = *bestLocationMatched;
+	path = requestHandler->getPathRessource(bestLocation);
+}
 
 void Client::tryOpenRessource()
 {
 	if (!sendError)
 	{
 		Location &bestLocation = *bestLocationMatched;
-		path = requestHandler->getPathRessource(bestLocation);
 		struct stat s;
 		if( stat(path.c_str(),&s) == 0 )
 		{
@@ -168,7 +172,7 @@ void Client::tryOpenRessource()
 				}
 				if (!fp)
 				{
-					if ((bestLocation.getAutoIndex()))
+					if ((bestLocation.getAutoIndex()) && requestHandler ->getMethod() != "DELETE")
 						listDirectoryIntoFile(path);
 					else
 						set_response_code(FORBIDDEN);
@@ -202,9 +206,11 @@ void Client::listDirectoryIntoFile(std::string &path)
 	
 	while (entry != NULL) {
 		std::string url = requestHandler->getPath();
+		//std::cout << "url = " << url  << " entryNam = " << entry->d_name << std::endl;
 		if (url[url.length() - 1] != '/')
 			url += "/";
 		url += entry->d_name;
+		//std::cout << "final URL = " << url << std::endl;
 		fileContent += "<li><a href=" + url  + ">" + entry->d_name +   "</a></li><br>";
 		entry = readdir(dir);
 	}
@@ -212,25 +218,37 @@ void Client::listDirectoryIntoFile(std::string &path)
 	fileContent += "</body></html>";
 	fputs(fileContent.c_str(),listDir );
 	fclose(listDir);
-	path = filePath;
+	//path = filePath;
 	fp  = fopen(filePath.c_str(),"rb");
 }
 
-
+bool Client::isRequestForCgi()
+{
+	std::string extention = FileSystem::getExtention(path, true);
+	std::string pathCgi = bestLocationMatched->getPathCgi(extention);
+	if (!pathCgi.empty())
+	{
+		isForCgi = true;
+		cgiPath = pathCgi;
+	}
+	return (!pathCgi.empty());
+	
+}
 
 void Client::setupHeadersForCgi(std::string &cgiPath)
 {
 	requestHandler->addHeaderToCgi("script_name", cgiPath);
-	requestHandler->addHeaderToCgi("protocol", requestHandler->getHttpVersion());
-	requestHandler->addHeaderToCgi("port", serverConfigs->getServ());
-	requestHandler->addHeaderToCgi("method", requestHandler->getMethod());
-	requestHandler->addHeaderToCgi("path_info", requestHandler->getPath());
+	requestHandler->addHeaderToCgi("server_protocol", requestHandler->getHttpVersion());
+	requestHandler->addHeaderToCgi("server_port", serverConfigs->getServ());
+	requestHandler->addHeaderToCgi("request_method", requestHandler->getMethod());
+	requestHandler->addHeaderToCgi("path_info", path);
 	std::string fullPath = FileSystem::get_current_dir();
 	if (cgiPath[0] != '/')
 		fullPath += '/';
-	fullPath += requestHandler->getPath();
+	fullPath += path;
 	requestHandler->addHeaderToCgi("path_translated", fullPath);
 	requestHandler->addHeaderToCgi("query_string", requestHandler->getQuery());
 	requestHandler->addHeaderToCgi("remote_addr", addr);
 	requestHandler->addHeaderToCgi("remote_port", port);
 }
+

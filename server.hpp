@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/19 17:28:56 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/21 15:54:43 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,27 +115,18 @@ class Server
 		}
 		
 
-		std::string getExtention(std::string &str)
-		{
-			std::string extention;
-			size_t pos = str.rfind('.');
-			if (pos != std::string::npos)
-				extention = str.substr(pos, str.length());
-			return (extention);
-		}
+		
 		std::string  getHeaderResponse(Client &client)
 		{
 			std::string headerRespone = client.requestHandler->getHttpVersion() + " " +  std::to_string(client.responseCode);
 			fseek(client.fp, 0L, SEEK_END);
 			size_t fileSize = ftell(client.fp);
 			rewind(client.fp);
-			std::string extention = getExtention(client.path);
+			std::string extention = FileSystem::getExtention(client.path);
 			std::string contentType =  ContentTypes::getContentType(extention);
 			headerRespone += StaticResponseMessages::getMessageResponseCode(client.responseCode);
 			if (client.responseCode == MOVED_PERMANETLY)
-			{
 				headerRespone += "\r\nLocation: " + client.bestLocationMatched->getRedirect();
-			}
 			headerRespone += "\r\nConnection: close\r\nContent-Length: " + std::to_string(fileSize) +  "\r\nContent-Type: " + contentType + "\r\n\r\n";
 			return (headerRespone);
 		}
@@ -148,9 +139,8 @@ class Server
 		}
 		bool sendHeaderResponse(Client &client, fd_set &reads, fd_set &writes, int &clientIdx)
 		{
-			
-			if (client.sendError)//set path to the correct error page
-				client.setPathError();
+			if (client.sendError)
+				client.setPathResponse();
 			std::string responseHeader = getHeaderResponse(client);
 			std::cout << responseHeader << std::endl;	
 			if (send(client.socket, responseHeader.c_str(), responseHeader.length(), 0)  == -1 ||\
@@ -193,7 +183,7 @@ class Server
                         GETSOCKETERRNO());
 				return ;
             }
-
+			newClient.setClientInfo();
             printf("New connection from %d.\n",
                   newClient.socket);
 			_clients.AddClient(newClient);

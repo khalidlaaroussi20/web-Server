@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:37:58 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/18 18:02:59 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/20 18:42:44 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,8 +38,6 @@ class PostRequest : public  A_Request
 
 		void handleRequest(std::string &body, size_t size, Client &client);
 		
-		void setBodyAsFinished(Client &client);
-
 		void write_body(std::string& body, size_t size);
 		void write_body(std::vector<const char *>  &chunks, size_t size);
 

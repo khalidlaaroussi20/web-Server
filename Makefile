@@ -1,6 +1,7 @@
 NAME = webserv
 
-SRCS = main.cpp HostsManagement.cpp filemanagement.cpp A_Request.cpp GetRequest.cpp PostRequest.cpp  client.cpp
+SRCS = main.cpp HostsManagement.cpp filemanagement.cpp A_Request.cpp GetRequest.cpp PostRequest.cpp  DeleteRequest.cpp CgiHandler.cpp \
+		client.cpp utils/utils.cpp CGI.cpp
 
 OBJS = ${SRCS:.c=.o}
 

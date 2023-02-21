@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 13:04:37 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/19 16:07:28 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/20 16:42:48 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 
 #include "../../includes.hpp"
 #include "../../static/SupportedMethods.hpp"
+
+#define DEFAULT_UPLOAD_PASS "./public/uploads"
 
 #define  Extention std::string
 
@@ -34,6 +36,7 @@ class Location
 		Location()
 		{
 			_autoIndex = false;
+			setDefaultUploadPass();
 		}
 		
 		std::string &getRoute()
@@ -121,6 +124,11 @@ class Location
 			_uploadPass = uploadPass;
 		}
 
+		void setDefaultUploadPass()
+		{
+			_uploadPass = DEFAULT_UPLOAD_PASS;
+		}
+
 		void setCgis(std::map < Extention, std::string  >  &cgis)
 		{
 			_cgis = cgis;
@@ -144,16 +152,19 @@ class Location
 
 		bool isRouteMatch(std::string &path)
 		{
-			if (path.rfind(_route, 0) == 0)
-			{
-				std::cout << "findedd\n";
-				std::cout << "len = " << path.length() << " route = " << _route << " length = " << _route.length() << std::endl;
-			}
 			if (path.rfind(_route, 0) == 0 && (path.length() == _route.length() || ((path.length() > _route.length() && ( _route[_route.length() - 1] == '/' ||   path[_route.length()] == '/')))))
 				return (true);
 			return (false);
 		}
-		
+
+		std::string getPathCgi(Extention &extention)
+		{
+			std::string pathCgi;
+			auto it = _cgis.find(extention);
+			if (it != _cgis.end())
+				pathCgi = it ->second;
+			return (pathCgi);
+		}
 };
 
 #endif

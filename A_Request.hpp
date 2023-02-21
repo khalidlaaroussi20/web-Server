@@ -17,6 +17,7 @@
 #include "static/StatusCode.hpp"
 #include "parsing/configParser/Location.hpp"
 #include "parsing/requestParser/HeaderParser.hpp"
+#include "HeaderPath.hpp"
 
 class Client;
 
@@ -35,12 +36,14 @@ public:
 	typedef std::map<std::string , std::vector < std::string > > headersType;
 	A_Request();
 	std::string &getPath();
+
 	std::string &getQuery();
 	
 	std::string &getMethod();
 
 	
 	void parseRequestHeader(std::string &request);
+	void parsePath(HeaderParser &parser);
 
 	void setHeadersRequest(std::string &request);
 	void setHeadersForCgi(std::string &request);
@@ -66,6 +69,16 @@ public:
 
 	std::string getHeaderCgiValue(std::string header);
 	
+	void printCgisHeaders()
+	{
+		std::cout << "headers for cgis : \n\n";
+		for (auto xs : _headersForCgi)
+		{
+			std::cout << xs.first << "=" << xs.second << std::endl;
+		}
+	}
+
+	void setBodyAsFinished(Client &client);
 	
 	virtual ~A_Request()
 	{

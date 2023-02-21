@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/15 17:39:01 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/20 16:27:12 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -248,7 +248,7 @@ class ConfigParser
 					
 		// 			std::cout << "******************************************\n\n";
 		// 			ServerConfigs &serverConfigs = a.second.getServerConfigs();
-		// 			std::map<int, std::string > & errorPages = serverConfigs.getErrorPages();
+		// 			std::map<int, std::string > & errorPages = serverConfigs.getResponsePages();
 		// 			std::vector <Location> &locations = serverConfigs.getLocations();
 		// 			std::cout << "listen = " << serverConfigs.getListen() << std::endl;
 		// 			std::cout << "host = " << serverConfigs.getHost() << " serv = " << serverConfigs.getServ() << std::endl;

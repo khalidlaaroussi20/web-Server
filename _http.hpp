@@ -79,14 +79,33 @@ struct Http{
 						client.finished_body();	
 				}
 			}
-			client.tryOpenRessource();
+			client.setPathRessource();// Setting path ressource
+			if (client.sendError == false)
+			{
+				if (client.isRequestForCgi())
+				{
+					std::cout << "********cgi  found*******\n\n";
+					client.setupHeadersForCgi(client.cgiPath);
+					client.requestHandler->printCgisHeaders();
+				}
+				client.tryOpenRessource();
+			}
 		}
 
 		if (client.sendError)
-			client.finished_body();
+		{
+			if (client.requestHandler->getMethod() != "DELETE" || client.responseCode != FORBIDDEN)
+			{
+				client.finished_body();
+				return ;
+			}
+		}
+		if (client.isForCgi)
+		{
+			
+		}
 		else if (client.requestHandler)	//handle request
 		{
-			std::cout << "body Handler\n";
 			client.requestHandler->handleRequest(body, sz, client);
 			if(client.body_is_done())
 				std::cout << "body_done " << std::endl;

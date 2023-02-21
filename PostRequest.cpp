@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 17:48:36 by mel-amma          #+#    #+#             */
-/*   Updated: 2023/02/15 15:43:46 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/20 18:42:12 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,10 +154,5 @@ void PostRequest::write_body(std::vector<const char *>  &chunks, size_t size)
 
 PostRequest::~PostRequest()
 {
-}
-
-void PostRequest::setBodyAsFinished(Client &client)
-{
-	client.finished_body();
-	client.set_response_code(CREATED);
+	
 }

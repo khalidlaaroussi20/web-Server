@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 14:53:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/19 16:51:15 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/21 15:40:59 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,15 +64,31 @@ void A_Request::setHeadersForCgi(std::string &request)
 		if (!requestHeader.empty())
 		{
 			std::string  value = parser.getHeaderValue();
-			_headersForCgi[requestHeader] = value;
+			_headersForCgi["http_" + requestHeader] = value;
 		}
 	}
 
-	for (auto xs : _headersForCgi)
-	{
-		std::cout << xs.first << " : " << xs.second << std::endl;
-	}
+	// for (auto xs : _headersForCgi)
+	// {
+	// 	std::cout << xs.first << " : " << xs.second << std::endl;
+	// }
 
+}
+
+void  A_Request::parsePath(HeaderParser &parser)
+{
+	HeaderPath headerPath;
+	std::string keysDelimeters = ":";
+	std::string path = parser.getNextToken(keysDelimeters);
+	if (headerPath.parse(path))
+	{
+		_path = headerPath.getPath();
+		_query = headerPath.getParams();
+	}
+	else
+		_isErrorOccurs = true;
+
+	
 }
 
 void A_Request::setHeadersRequest(std::string &request)
@@ -82,10 +98,10 @@ void A_Request::setHeadersRequest(std::string &request)
 	std::cout << request << std::endl;
 	HeaderParser parser(request);
 	_method = parser.getNextToken(keysDelimeters);
-	_path = parser.getNextToken(keysDelimeters);
-	//std::cout << "path = " << _path << std::endl;
+	
+	parsePath(parser);
+	//std::cout << "path = " << _path << " query = " << _query << std::endl;
 	_httpVersion =  parser.getNextToken(keysDelimeters);
-
 	while (!parser.isDoneParsing())
 	{
 		std::string requestHeader = parser.getNextToken(keysDelimeters);
@@ -114,11 +130,6 @@ void A_Request::parseRequestHeader(std::string &request)
 {
 	setHeadersRequest(request);
 	setHeadersForCgi(request);
-	// for (int i = 0; i < _headersForCgi.size(); i++)
-	// {
-	// 	std::cout << "aa " << _headersForCgi[i] << std::endl;
-	// }
-	
 }
 
 std::string &A_Request::getHttpVersion()
@@ -204,4 +215,11 @@ std::string A_Request::getPathRessource(Location &bestLocationMatched)
 void A_Request::addHeaderToCgi(const std::string headerKey, const std::string headerValue)
 {
 	_headersForCgi[headerKey] = headerValue;
+}
+
+
+void A_Request::setBodyAsFinished(Client &client)
+{
+	client.finished_body();
+	client.set_response_code(CREATED);
 }

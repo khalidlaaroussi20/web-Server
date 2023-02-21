@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 11:13:53 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/16 12:31:20 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/21 15:46:58 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #define PATH_501 "./public/errors/501.html"
 #define PATH_200 "./public/errors/200.html"
 #define PATH_201 "./public/errors/201.html"
+#define PATH_204 "./public/errors/204.html"
 #define PATH_301 "./public/errors/301.html"
 
 
@@ -55,6 +56,7 @@ struct StaticErrorPages
 		
 		errorPages[OK] = PATH_200;
 		errorPages[CREATED] = PATH_201;
+		errorPages[NO_CONTENT] = PATH_204;
 
 		errorPages[MOVED_PERMANETLY] = PATH_301;
 		

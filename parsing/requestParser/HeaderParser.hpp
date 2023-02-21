@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/19 14:52:19 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/20 18:35:43 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,12 @@ class HeaderParser
 			while (_currPos < _request.length())
 			{
 				if (_request[_currPos] == ':')
+				{
 					_currPos++;
+					skipSpaces();
+				}
+				if (_request[_currPos] == '\n')
+					break;
 				if ((_currPos + 1 < _request.length() && _request[_currPos] == '\r' && _request[_currPos + 1] == '\n'))
 				{
 					_currPos++;

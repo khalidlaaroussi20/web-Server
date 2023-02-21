@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:06:20 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/19 17:07:05 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/20 19:45:06 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 #include "A_Request.hpp"
 #include "GetRequest.hpp"
 #include "PostRequest.hpp"
+#include "DeleteRequest.hpp"
+#include "CgiHandler.hpp"
 #include "parsing/configParser/Location.hpp"
 #include "parsing/configParser/ServerConfigs.hpp"
 // #include "server.hpp"
@@ -25,8 +27,11 @@
 class A_Request; 
 class PostRequest;
 class GetRequest;
+class DeleteRequest;
+class CgiHandler;
 class ServerConfigs;
 class Server;
+
 
 #define ServerMap std::map<std::string, Server >
 
@@ -50,6 +55,8 @@ class Client
 		bool 					body_done;
 		Location				*bestLocationMatched;
 		bool					isHeaderSend;
+		bool					isForCgi;
+		std::string				cgiPath;
 
 
 		Client();
@@ -72,14 +79,17 @@ class Client
 		bool body_is_done();
 		void setBestLocationMatched();
 		void setServerConfigs( ServerMap& Servers);
+		void setPathRessource();
 
 		void tryOpenRessource();
 
-		void setPathError();
+		void setPathResponse();
 
 		void setupHeadersForCgi(std::string &cgiPath);
 		void listDirectoryIntoFile(std::string &path);
 		void setClientInfo();
+
+		bool isRequestForCgi();
 
 };
 
