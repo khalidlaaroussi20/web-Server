@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/21 15:54:43 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 14:16:23 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,7 @@ class Server
 			headerRespone += StaticResponseMessages::getMessageResponseCode(client.responseCode);
 			if (client.responseCode == MOVED_PERMANETLY)
 				headerRespone += "\r\nLocation: " + client.bestLocationMatched->getRedirect();
-			headerRespone += "\r\nConnection: close\r\nContent-Length: " + std::to_string(fileSize) +  "\r\nContent-Type: " + contentType + "\r\n\r\n";
+			headerRespone += "\r\nConnection: close\r\nContent-Length: " + std::to_string(fileSize) +  "\r\nContent-Type: " + contentType + "; charset=utf-8 \r\n\r\n";
 			return (headerRespone);
 		}
 		

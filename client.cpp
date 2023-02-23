@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/21 17:23:31 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 14:33:25 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,6 +137,7 @@ void Client::setPathResponse()
 	if (fp)
 		fclose(fp);
 	std::string errorPath = serverConfigs->getResponsePage(responseCode);
+	std::cout << "response Code = " << responseCode << " errorPath = "<< errorPath << std::endl;
 	path = errorPath;
 	fp = fopen(path.c_str(), "rb");
 }
@@ -194,12 +195,10 @@ void Client::listDirectoryIntoFile(std::string &path)
 	
 	while (entry != NULL) {
 		std::string url = requestHandler->getPath();
-		//std::cout << "url = " << url  << " entryNam = " << entry->d_name << std::endl;
 		if (url[url.length() - 1] != '/')
 			url += "/";
 		url += entry->d_name;
-		//std::cout << "final URL = " << url << std::endl;
-		fileContent += "<li><a href=" + url  + ">" + entry->d_name +   "</a></li><br>";
+		fileContent += "<li><a href='" + url  + "'>" + entry->d_name +   "</a></li><br>";
 		entry = readdir(dir);
 	}
 	closedir(dir);

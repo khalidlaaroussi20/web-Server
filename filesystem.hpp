@@ -39,7 +39,7 @@ public:
                 file.open(path, std::ios::in | std::ios::binary);
                 break;
             case (WRITE):
-                path = path + generateRandomString(15) + extension;
+                path = path + generateRandomString(6) + extension;
                 file.open(path, std::ios::out | std::ios::trunc | std::ios::binary);
 				std::cout << "openedd\n";
                 break;
@@ -113,7 +113,6 @@ public:
         result.reserve(length);
         static const char alphanum[] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
-        std::srand(std::time(nullptr));
         for (int i = 0; i < length; ++i)
         {
             result.push_back(alphanum[std::rand() % (sizeof(alphanum) - 1)]);

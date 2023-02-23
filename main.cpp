@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 16:34:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/18 18:13:16 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 14:12:03 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ std::map<std::string, ServerMap > servers;
 
 std::vector<std::map <std::string, int > > StaticConfig::SERVER_CONFIGS = StaticConfig::MakeServerConfigVector();
 
-std::map < int  , std::string> StaticErrorPages::ERROR_PAGES = StaticErrorPages::S_InitErrorPages();
+std::map < int  , std::string> StaticResponsePages::RESPONSE_PAGES = StaticResponsePages::S_InitResponsePages();
 
 
 std::map <std::string, std::string > ContentTypes::S_CONTENT_TYPES_MAPPING =  ContentTypes::S_setContentTypesMapping();
@@ -61,7 +61,7 @@ std::string readFile(std::string file)
 
 int main(int ac , char **av)
 {
-
+	std::srand(std::time(nullptr));
 	if (ac != 2)
 	{
 		std::cerr << "number argument Not valid !" << std::endl;

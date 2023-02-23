@@ -1,19 +1,8 @@
-<html><head>
-<title>Example Form</title>
-</head><body>
-
-<h1>Example Form</h1>
-
-<p>You can fill out this form to make a POST request.</p>
-
-<form method="post" enctype="multipart/form-data" action="/">
-  <label for="name">Name:</label>
-  <input name="name" type="text"><br>
-  <label for="comment">Comment:</label>
-  <input name="comment" type="text"><br>
-  <input name="file" type="file"><br>
-  <input type="submit" value="submit">
-</form>
-
-</body>
-</html>
+<form action="http://localhost:3030" method="post" enctype="multipart/form-data">
+    <p><input type="text" name="text" value="text default">
+	<p><input type="text" name="text1" value="text default">
+	<p><input type="text" name="text2" value="text default">
+    <p><input type="file" name="file1" multiple>
+    <p><input type="file" name="file2" multiple>
+    <p><button type="submit">Submit</button>
+  </form>

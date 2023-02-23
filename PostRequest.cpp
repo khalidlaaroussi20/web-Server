@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 17:48:36 by mel-amma          #+#    #+#             */
-/*   Updated: 2023/02/20 18:42:12 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 15:10:24 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,10 +45,21 @@ bool PostRequest::post_init()
 }
 
 
+void PostRequest::open_file(std::string &contentType)
+{
+    std::string str("./public/uploads/upload_");
+	std::cout << "created File\n";
+	// upload_store check if its there, check upload pass or just put in default upload path
+	fs = FileSystem(str /*get best match*/, WRITE, ContentTypes::getExtention(contentType));
+	fs.open();
+    file_initialized = true;
+}
+
 /*  send in the buffer itself or its address and the size to write  */
 void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
 {
 	//size is what received read
+    // std::cout << body << std::endl;
     auto it = _headers.find("Content-Type");
     if (it == _headers.end())
     {
@@ -69,7 +80,7 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
             return ;
         }
     }
-
+    
     std::vector<const char *>  chunks;
     if(is_chunked)
     {
@@ -104,25 +115,27 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
 
     if (content_type == "multipart/form-data")
     {
-        // take care content-type or content_disposition with their boundaries having boundary set somewhere
+        if(is_chunked)
+        {
+            for (int i = 0; i < chunks.size(); i +=2)
+            {
+                std::string chunk_body(chunks[i],chunks[i + 1]- chunks[i]);
+                if(!handle_boundary(chunk_body,size,client))
+                    return ;
+            }
 
-        // fs.close(); then make a new file when theres a new one
+        }
+        else if(!handle_boundary(body,size,client))
+                return;
+
     }
     else
     {
         if(!file_initialized)
-        {
-            std::string str("./public/uploads/upload_");
-	        std::cout << "created File\n";
-	        // upload_store check if its there, check upload pass or just put in default upload path
-	        fs = FileSystem(str /*get best match*/, WRITE, ContentTypes::getExtention(content_type));
-	        fs.open();
-            file_initialized = true;
-        }
-        //maybe clean of \n\r and such?
+            open_file(content_type);
         is_chunked? write_body(chunks,size): write_body(body,size) ;
     }
-    if (!is_chunked && body_length <= received)
+    if (!is_chunked && (body_length <= received || boundary_handler.is_done()))
     {
         fs.close();
         setBodyAsFinished(client);
@@ -154,5 +167,61 @@ void PostRequest::write_body(std::vector<const char *>  &chunks, size_t size)
 
 PostRequest::~PostRequest()
 {
-	
+}
+
+void PostRequest::setBodyAsFinished(Client &client)
+{
+	client.finished_body();
+	client.set_response_code(CREATED);
+}
+
+bool PostRequest::handle_boundary(std::string &body, size_t size, Client &client)
+{
+    if (!boundary_handler.is_initialized())
+    {
+        auto it = _headers.find("boundary");
+        if (it == _headers.end())
+        {
+            std::cout << "boundary doesnt exist error\n";
+            client.set_response_code(BAD_REQUEST);
+            client.finished_body();
+            return 0;
+        }
+        boundary_handler.set_boundary(it->second[0]);
+    }
+    BoundaryHandler::BoundaryRetType res = boundary_handler.clean_body(body, body.size());
+    if(boundary_handler.failed())
+    {
+        client.set_response_code(BAD_REQUEST);
+        client.finished_body();
+        return 0;
+    }
+    if (res.size() != 0)
+    {
+        for (size_t i = 0; i < res.size(); i++)
+        {
+            if (res[i].first.empty() && res[i].second.empty())
+            {
+                std::cout << "contiuin" << std::endl;
+                continue;
+            }
+            if (!res[i].second.empty())
+            {
+                if (fs.is_open())
+                    fs.close();
+                open_file(res[i].second);
+            }
+            if (fs.is_open())
+            {
+                write_body(res[i].first, res[i].first.size());
+                // received += res[i].first.size();
+            } 
+            else
+            {
+                std::cout << "?" << res[i].first << "?";
+                std::cout << "what just happened?" << std::endl;
+            }
+        }
+    }
+    return 1;
 }
