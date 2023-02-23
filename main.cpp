@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 16:34:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/23 14:12:03 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 16:11:23 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ std::map<std::string, ServerMap > servers;
 
 std::vector<std::map <std::string, int > > StaticConfig::SERVER_CONFIGS = StaticConfig::MakeServerConfigVector();
 
-std::map < int  , std::string> StaticResponsePages::RESPONSE_PAGES = StaticResponsePages::S_InitResponsePages();
 
 
 std::map <std::string, std::string > ContentTypes::S_CONTENT_TYPES_MAPPING =  ContentTypes::S_setContentTypesMapping();
@@ -27,7 +26,7 @@ std::map <std::string, std::string > ContentTypes::S_EXTENTIONS_MAPPING =  Conte
 std::map <std::string, bool> SupportedMethods::SUPPORTED_METHODS =  SupportedMethods::S_SetSupportedMethods();
 
 
-std::map < int  , std::string> StaticResponseMessages::MAPPING_RESPONSE_CODE_TO_MESSAGES = StaticResponseMessages::S_initResponseMessages();
+std::map < StatusCode  , std::string> StaticResponseMessages::MAPPING_RESPONSE_CODE_TO_MESSAGES = StaticResponseMessages::S_initResponseMessages();
 
 
 void handler(int sig){

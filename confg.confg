@@ -10,7 +10,7 @@ server
         autoindex on
         root ./public/
         index index.php
-        upload_pass ./public/uploads
+        upload_pass ./public/uploads/
         cgi_pass php ./cgi-bin/php-cgi
         cgi_pass py /usr/local/bin/python3
     }

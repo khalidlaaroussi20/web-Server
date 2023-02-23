@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 13:04:37 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/20 16:42:48 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 16:26:59 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "../../includes.hpp"
 #include "../../static/SupportedMethods.hpp"
 
-#define DEFAULT_UPLOAD_PASS "./public/uploads"
+#define DEFAULT_UPLOAD_PASS "./public/uploads/"
 
 #define  Extention std::string
 

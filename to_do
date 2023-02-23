@@ -11,3 +11,13 @@ metaVars["REMOTE_ADDR"] = headers[""];//IP address of the client (dot-decimal).
 metaVars["REMOTE_PORT"] = headers[""];
 metaVars["CONTENT_TYPE"] = headers[""];
 metaVars["CONTENT_LENGTH"] = headers[""];
+
+
+
+//
+
+
+upload_pass
+
+
+body size

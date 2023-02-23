@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 17:48:36 by mel-amma          #+#    #+#             */
-/*   Updated: 2023/02/23 15:10:24 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 16:43:02 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,14 +45,26 @@ bool PostRequest::post_init()
 }
 
 
-void PostRequest::open_file(std::string &contentType)
+bool PostRequest::open_file(std::string &contentType, Client &client)
 {
-    std::string str("./public/uploads/upload_");
-	std::cout << "created File\n";
-	// upload_store check if its there, check upload pass or just put in default upload path
-	fs = FileSystem(str /*get best match*/, WRITE, ContentTypes::getExtention(contentType));
-	fs.open();
-    file_initialized = true;
+	std::string pathDir = client.bestLocationMatched->getUploadPass();
+	std::cout << "pathDir = " << pathDir << std::endl;
+	if (FileSystem::isDirectory(pathDir.c_str()))
+	{
+		std::cout << "created File\n";
+		pathDir += "_upload";
+		// upload_store check if its there, check upload pass or just put in default upload path
+		fs = FileSystem(pathDir /*get best match*/, WRITE, ContentTypes::getExtention(contentType));
+		fs.open();
+		file_initialized = true;
+		return (true);
+	}
+	else
+	{
+		setBodyAsFinished(client, FORBIDDEN);
+		return (false);
+	}
+	
 }
 
 /*  send in the buffer itself or its address and the size to write  */
@@ -131,8 +143,8 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
     }
     else
     {
-        if(!file_initialized)
-            open_file(content_type);
+        if(!file_initialized && !open_file(content_type, client))
+			return ;
         is_chunked? write_body(chunks,size): write_body(body,size) ;
     }
     if (!is_chunked && (body_length <= received || boundary_handler.is_done()))
@@ -169,10 +181,10 @@ PostRequest::~PostRequest()
 {
 }
 
-void PostRequest::setBodyAsFinished(Client &client)
+void PostRequest::setBodyAsFinished(Client &client, StatusCode responseCode)
 {
 	client.finished_body();
-	client.set_response_code(CREATED);
+	client.set_response_code(responseCode);
 }
 
 bool PostRequest::handle_boundary(std::string &body, size_t size, Client &client)
@@ -194,7 +206,7 @@ bool PostRequest::handle_boundary(std::string &body, size_t size, Client &client
     {
         client.set_response_code(BAD_REQUEST);
         client.finished_body();
-        return 0;
+        return (0);
     }
     if (res.size() != 0)
     {
@@ -209,7 +221,8 @@ bool PostRequest::handle_boundary(std::string &body, size_t size, Client &client
             {
                 if (fs.is_open())
                     fs.close();
-                open_file(res[i].second);
+                if (!open_file(res[i].second, client))
+					return (0);
             }
             if (fs.is_open())
             {

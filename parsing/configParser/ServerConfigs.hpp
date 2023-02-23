@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:17:55 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/23 14:26:49 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 16:26:39 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@
 
 
 #include "Location.hpp"
-#include "../../static/StaticResponsePages.hpp"
 
 class ServerConfigs
 {
@@ -32,7 +31,6 @@ class ServerConfigs
 		ServerConfigs(){
 			_locations = std::vector <Location>();
 			_locations.push_back(getDefaultLocation());
-			setDefaultErrorPages();
 			_serv = "8080";
 		};
 
@@ -45,12 +43,6 @@ class ServerConfigs
 			return (defaultAllowedMethods);
 		}
 
-
-		void setDefaultErrorPages()
-		{
-			_errorPages = StaticResponsePages::RESPONSE_PAGES;
-		}
-		
 		Location getDefaultLocation()
 		{
 			Location defaultLocation = Location();
@@ -177,13 +169,13 @@ class ServerConfigs
 
 		void addErrorPage(int errorCode, std::string path)
 		{
-			std::ifstream file;
-			file.open(path);
-			if (file)
-			{
-				_errorPages[errorCode] = path;
-				file.close();
-			}
+			// std::ifstream file;
+			// file.open(path);
+			// if (file)
+			// {
+			_errorPages[errorCode] = path;
+			// 	file.close();
+			// }
 		}
 
 		Location &getBestMatchedLocation(std::string &path)

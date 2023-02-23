@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/23 14:33:25 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 16:19:52 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,6 +132,21 @@ void Client::setServerConfigs( ServerMap& servers)
 
 }
 
+void Client::createResponseFile()
+{
+	std::string message = StaticResponseMessages::getMessageResponseCode(responseCode);
+	std::string fileName = FileSystem::generateRandomString(10) + ".html";
+	std::string filePath = "/tmp/" +  fileName;
+	FILE *responseFile = fopen(filePath.c_str(),"wb");
+	std::string fileContent = "<html><head><title> " + std::to_string(responseCode) + " " + message + "</title></head><body><h1>" + message + "</h1></body></html>";
+	fputs(fileContent.c_str(),responseFile );
+	fclose(responseFile);
+	path = filePath;
+	fp  = fopen(filePath.c_str(),"rb");
+	responseCode = NOT_FOUND;
+}
+
+
 void Client::setPathResponse()
 {
 	if (fp)
@@ -140,6 +155,8 @@ void Client::setPathResponse()
 	std::cout << "response Code = " << responseCode << " errorPath = "<< errorPath << std::endl;
 	path = errorPath;
 	fp = fopen(path.c_str(), "rb");
+	if (!fp)
+		createResponseFile();
 }
 
 void Client::setPathRessource()
@@ -182,7 +199,7 @@ void Client::listDirectoryIntoFile(std::string &path)
 		set_response_code(NOT_FOUND);
 		return ;
 	}
-	std::string fileName = FileSystem::generateRandomString(20) + ".html";
+	std::string fileName = FileSystem::generateRandomString(10) + ".html";
 	std::string filePath = "/tmp/" +  fileName;
 	FILE *listDir = fopen(filePath.c_str(),"wb");
 	if (listDir == nullptr)

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:06:20 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/21 16:45:51 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 16:19:29 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,8 @@ class Client
 		bool isRequestForCgi();
 
 		void setIndexPath();
+
+		void createResponseFile();
 
 };
 

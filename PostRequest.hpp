@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   PostRequest.cpp                                    :+:      :+:    :+:   */
+/*   PostRequest.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:37:58 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/22 17:37:07 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 16:42:28 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,8 @@ class PostRequest : public  A_Request
 
 		void handleRequest(std::string &body, size_t size, Client &client);
 		
-		void setBodyAsFinished(Client &client);
-		void open_file(std::string& contentType);
+		void setBodyAsFinished(Client &client, StatusCode responseCode = CREATED);
+		bool open_file(std::string &contentType, Client &client);
 
 		void write_body(std::string& body, size_t size);
 		void write_body(std::vector<const char *>  &chunks, size_t size);

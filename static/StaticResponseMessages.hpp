@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   staticResponseMessages.hpp                         :+:      :+:    :+:   */
+/*   StaticResponseMessages.hpp                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 12:26:09 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/15 12:45:41 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/23 16:21:11 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@
 class StaticResponseMessages
 {
 	public :
-		static std::map<int, std::string> MAPPING_RESPONSE_CODE_TO_MESSAGES;
+		static std::map<StatusCode, std::string> MAPPING_RESPONSE_CODE_TO_MESSAGES;
 
-		static  std::map<int, std::string> S_initResponseMessages()
+		static  std::map<StatusCode, std::string> S_initResponseMessages()
 		{
-			std::map<int, std::string> Messages;
+			std::map<StatusCode, std::string> Messages;
 			Messages[OK] = " OK ";
 			Messages[CREATED] = " Created ";
 			
@@ -44,7 +44,7 @@ class StaticResponseMessages
 			return (Messages);
 		}
 
-		static  std::string &getMessageResponseCode(int responseCode)
+		static  std::string &getMessageResponseCode(StatusCode responseCode)
 		{
 			return (MAPPING_RESPONSE_CODE_TO_MESSAGES[responseCode]);
 		}
