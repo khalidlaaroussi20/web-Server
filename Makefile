@@ -1,7 +1,7 @@
 NAME = webserv
 
-SRCS = main.cpp HostsManagement.cpp filemanagement.cpp A_Request.cpp GetRequest.cpp PostRequest.cpp  DeleteRequest.cpp CgiHandler.cpp \
-		client.cpp utils/utils.cpp CGI.cpp BoundaryHandler.cpp 
+SRCS = main.cpp HostsManagement.cpp filemanagement.cpp A_Request.cpp GetRequest.cpp PostRequest.cpp  DeleteRequest.cpp \
+		client.cpp utils/utils.cpp CGI.cpp BoundaryHandler.cpp  CGIResponse.cpp A_Response.cpp NResponse.cpp 
 
 OBJS = ${SRCS:.c=.o}
 

@@ -85,19 +85,14 @@ struct Http{
 				if (client.isRequestForCgi())
 				{
 					client.setupHeadersForCgi(client.cgiPath);
-					client.requestHandler->printCgisHeaders();
+					//client.requestHandler->printCgisHeaders();
 				}
 			}
+			client.factoryResponseHandlerSetter();
 		}
 		// cgi for get request  i don't know if i should add indexes 
 		if (client.sendError)
-		{
 			client.finished_body();
-		}
-		else if (client.isForCgi)
-		{
-			
-		}
 		else if (client.requestHandler)	//handle request
 		{
 			client.requestHandler->handleRequest(body, sz, client);
@@ -112,15 +107,16 @@ struct Http{
     {
 		Client &client = _clients[Client_Number];
 		bool isHeaderSendSuccefuly = true;
-        if (client.isHeaderSend == false)
+		A_Response *response =  client.responseHandler;
+        if (response->isHeaderSend() == false)
 		{
-            isHeaderSendSuccefuly = _server.sendHeaderResponse(client, _reads, _writes, Client_Number);
+            isHeaderSendSuccefuly =  response->sendHeaderResponse(client, _reads, _writes, Client_Number);
+			if (!isHeaderSendSuccefuly)
+				_clients.dropClient(Client_Number, _reads, _writes);
 		}
-		if (isHeaderSendSuccefuly)
+		else
 		{
-       		_server.serve_resource(client);
-			//close connection drop client?
-				//else if keep alive, reset request and body etc and leave socket and all alive
+			response->serve_resource(client);
         	if (client.fp == nullptr)
             	_clients.dropClient(Client_Number, _reads, _writes);
 		}

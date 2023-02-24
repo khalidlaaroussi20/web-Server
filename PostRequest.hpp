@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:37:58 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/23 16:42:28 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/24 14:51:39 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,14 +23,14 @@
 
 class PostRequest : public  A_Request
 {
-	FileSystem 	fs;
-	int 		received;
-	bool 		file_initialized;
-	int 		body_length;
-	bool 		is_chunked;
-	ChunkContentHandler chunk_handler;
-	BoundaryHandler boundary_handler;
-
+	FileSystem 				fs;
+	size_t 					received;
+	bool 					file_initialized;
+	int 					body_length;
+	bool 					is_chunked;
+	ChunkContentHandler 	chunk_handler;
+	BoundaryHandler 		boundary_handler;
+	size_t 					size_limit;
 	public :
 		PostRequest();
 		
@@ -43,7 +43,7 @@ class PostRequest : public  A_Request
 		void setBodyAsFinished(Client &client, StatusCode responseCode = CREATED);
 		bool open_file(std::string &contentType, Client &client);
 
-		void write_body(std::string& body, size_t size);
+		void write_body(std::string& body, size_t size, size_t total_size);
 		void write_body(std::vector<const char *>  &chunks, size_t size);
 		bool handle_boundary(std::string &body, size_t size, Client &client);
 

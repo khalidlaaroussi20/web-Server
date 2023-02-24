@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/03 15:17:55 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/23 16:26:39 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/24 14:15:35 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,13 @@ class ServerConfigs
 		unsigned long  long			_maxClientBodySize;
 		std::map<int , std::string> _errorPages;
 		std::vector <Location> 		_locations;
+		bool						size_limit_set;
 	public :
 		ServerConfigs(){
 			_locations = std::vector <Location>();
 			_locations.push_back(getDefaultLocation());
 			_serv = "8080";
+			size_limit_set = false;
 		};
 
 		std::vector <std::string> getDefaultAllowedMethods()
@@ -195,7 +197,16 @@ class ServerConfigs
 			}
 			return (_locations[idxBestLocation]);
 		}
-		
+
+		void size_limit_in()
+		{
+			size_limit_set = true;
+		}
+
+		bool size_limit_found()
+		{
+			return size_limit_set;
+		}
 };
 
 

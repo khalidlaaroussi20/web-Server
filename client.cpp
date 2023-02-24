@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/23 16:19:52 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/24 15:45:43 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ Client::Client()
 	sendError = isHeaderSend = false;
 	requestHeaderDone = false;
 	requestHandler = nullptr;
+	responseHandler = nullptr;
 	body_done = false;
 	bestLocationMatched = nullptr;
 	isForCgi = false;
@@ -42,6 +43,7 @@ Client::Client(SOCKET socket)
 	sendError = isHeaderSend = false;
 	requestHeaderDone = false;
 	requestHandler = nullptr;
+	responseHandler = nullptr;
 	body_done = false;
 	bestLocationMatched= nullptr;
 	isForCgi = false;
@@ -89,6 +91,15 @@ void Client::factoryRequestHandlerSetter()
 	}
 	
 }
+
+void Client::factoryResponseHandlerSetter()
+{
+	if (isForCgi)
+		responseHandler = new CGIResponse();
+	else
+		responseHandler = new NResponse();
+}
+
 
 void Client::set_request_configs(ServerConfigs	*serverConfigs_)
 {
@@ -143,7 +154,11 @@ void Client::createResponseFile()
 	fclose(responseFile);
 	path = filePath;
 	fp  = fopen(filePath.c_str(),"rb");
-	responseCode = NOT_FOUND;
+	if (!fp)
+	{
+		responseCode = INTERNAL_SERVER_ERROR;
+		createResponseFile();
+	}
 }
 
 
@@ -276,3 +291,13 @@ void Client::setupHeadersForCgi(std::string &cgiPath)
 	requestHandler->addHeaderToCgi("remote_port", port);
 }
 
+
+Client::~Client()
+{
+	if (requestHandler)
+		delete requestHandler;
+	if (responseHandler)
+		delete responseHandler;
+	requestHandler = nullptr;
+	responseHandler = nullptr;
+}

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 17:48:36 by mel-amma          #+#    #+#             */
-/*   Updated: 2023/02/23 16:43:02 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/24 15:44:09 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,11 @@ bool PostRequest::post_init()
 
 bool PostRequest::open_file(std::string &contentType, Client &client)
 {
-	std::string pathDir = client.bestLocationMatched->getUploadPass();
-	std::cout << "pathDir = " << pathDir << std::endl;
+	std::string pathDir;
+	if (client.isForCgi)
+		pathDir = "/tmp/";
+	else
+		pathDir = client.bestLocationMatched->getUploadPass();
 	if (FileSystem::isDirectory(pathDir.c_str()))
 	{
 		std::cout << "created File\n";
@@ -72,6 +75,7 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
 {
 	//size is what received read
     // std::cout << body << std::endl;
+	size_t total_size = body.length();
     auto it = _headers.find("Content-Type");
     if (it == _headers.end())
     {
@@ -91,30 +95,20 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
             client.finished_body();
             return ;
         }
+        if(!client.serverConfigs->size_limit_found())
+            size_limit = std::string::npos;
+        else
+            size_limit = client.serverConfigs->getMaxClientBodySize(); 
     }
     
     std::vector<const char *>  chunks;
     if(is_chunked)
     {
-        // std::cout << body;
         if(!chunk_handler.getHttpChunkContent(body.c_str(),size,chunks))
         {
-            std::cout << "chunks parsing failed\n";
             client.set_response_code(BAD_REQUEST);
             client.finished_body();
             return ;
-        }
-        std::cout << "chunk size = " << chunks.size() << std::endl;
-        for (int i = 0; i < chunks.size(); i +=2)
-        {
-            const char *a =  chunks[i];
-            std::string currChunk;
-            while (a !=  chunks[i + 1])
-            {
-                currChunk += *a;
-                a++;
-            }
-            std::cout << "chunk = " << currChunk << std::endl;
         }
     }
     /*
@@ -124,8 +118,7 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
         check if chunk size is in midde of the request (in case he sends two chuncks and you recv 1 and a half)
         if chunk size is 0 meaning its done then  close and flag up its done with body
     */
-
-    if (content_type == "multipart/form-data")
+   	if (content_type == "multipart/form-data" && !client.isForCgi)
     {
         if(is_chunked)
         {
@@ -145,8 +138,15 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
     {
         if(!file_initialized && !open_file(content_type, client))
 			return ;
-        is_chunked? write_body(chunks,size): write_body(body,size) ;
+        is_chunked? write_body(chunks,size): write_body(body,size, total_size) ;
     }
+    if(received > size_limit)
+    {
+        client.set_response_code(REQUEST_ENTITY_TOO_LARGE);
+        client.finished_body();
+        return ;
+    }
+
     if (!is_chunked && (body_length <= received || boundary_handler.is_done()))
     {
         fs.close();
@@ -160,9 +160,9 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
 };
 
 
-void PostRequest::write_body(std::string& body, size_t size)
+void PostRequest::write_body(std::string& body, size_t size, size_t total_size)
 {
-    received += size;
+    received += total_size;
     fs.Write_chunk(body,size);
 }
 
@@ -172,6 +172,7 @@ void PostRequest::write_body(std::vector<const char *>  &chunks, size_t size)
     {
         const char *a =  chunks[i];
         int _size = chunks[i + 1] - chunks[i];
+        received += _size;
         fs.Write_chunk(a,_size);
     }
 };
@@ -179,6 +180,8 @@ void PostRequest::write_body(std::vector<const char *>  &chunks, size_t size)
 
 PostRequest::~PostRequest()
 {
+    if(fs.is_open())
+        fs.close();
 }
 
 void PostRequest::setBodyAsFinished(Client &client, StatusCode responseCode)
@@ -189,6 +192,7 @@ void PostRequest::setBodyAsFinished(Client &client, StatusCode responseCode)
 
 bool PostRequest::handle_boundary(std::string &body, size_t size, Client &client)
 {
+	size_t total_size = body.size();
     if (!boundary_handler.is_initialized())
     {
         auto it = _headers.find("boundary");
@@ -226,8 +230,7 @@ bool PostRequest::handle_boundary(std::string &body, size_t size, Client &client
             }
             if (fs.is_open())
             {
-                write_body(res[i].first, res[i].first.size());
-                // received += res[i].first.size();
+                write_body(res[i].first, res[i].first.size(), total_size);
             } 
             else
             {

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:06:20 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/23 16:19:29 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/24 15:02:50 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@
 #include "GetRequest.hpp"
 #include "PostRequest.hpp"
 #include "DeleteRequest.hpp"
-#include "CgiHandler.hpp"
+#include "A_Response.hpp"
+#include "NResponse.hpp"
+#include "CGIResponse.hpp"
 #include "parsing/configParser/Location.hpp"
 #include "parsing/configParser/ServerConfigs.hpp"
 // #include "server.hpp"
@@ -28,6 +30,9 @@ class A_Request;
 class PostRequest;
 class GetRequest;
 class DeleteRequest;
+class A_Response;
+class NResponse;
+class CGIResponse;
 class CgiHandler;
 class ServerConfigs;
 class Server;
@@ -50,6 +55,7 @@ class Client
 		StatusCode 				responseCode;
 		bool					sendError;
 		A_Request   			*requestHandler;
+		A_Response				*responseHandler;
 		bool					requestHeaderDone;
 		ServerConfigs			*serverConfigs;// reset if we reset request?
 		bool 					body_done;
@@ -75,6 +81,7 @@ class Client
 		void set_response_code(StatusCode responseCode);
 
 		void factoryRequestHandlerSetter();
+		void factoryResponseHandlerSetter();
 		void set_request_configs(ServerConfigs	*serverConfigs_);
 		void finished_body();
 		bool body_is_done();
@@ -95,6 +102,9 @@ class Client
 		void setIndexPath();
 
 		void createResponseFile();
+
+
+		~Client();
 
 };
 
