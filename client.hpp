@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:06:20 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/24 15:02:50 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/25 17:53:33 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,14 @@
 #include "A_Response.hpp"
 #include "NResponse.hpp"
 #include "CGIResponse.hpp"
+#include "CGI.hpp"
 #include "parsing/configParser/Location.hpp"
 #include "parsing/configParser/ServerConfigs.hpp"
+
+
 // #include "server.hpp"
 
-class A_Request; 
+class A_Request;
 class PostRequest;
 class GetRequest;
 class DeleteRequest;
@@ -36,6 +39,7 @@ class CGIResponse;
 class CgiHandler;
 class ServerConfigs;
 class Server;
+class CGI;
 
 
 #define ServerMap std::map<std::string, Server >
@@ -64,6 +68,8 @@ class Client
 		bool					isForCgi;
 		std::string				cgiPath;
 		std::string				indexPath;
+		std::string				cgiFilePath;
+		//CGI						cgiHandler;
 
 
 		Client();

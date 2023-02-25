@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 17:48:36 by mel-amma          #+#    #+#             */
-/*   Updated: 2023/02/24 15:44:09 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/25 16:38:25 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ bool PostRequest::open_file(std::string &contentType, Client &client)
 		// upload_store check if its there, check upload pass or just put in default upload path
 		fs = FileSystem(pathDir /*get best match*/, WRITE, ContentTypes::getExtention(contentType));
 		fs.open();
+		if (client.isForCgi)
+			client.cgiFilePath = fs.getPath();
 		file_initialized = true;
 		return (true);
 	}

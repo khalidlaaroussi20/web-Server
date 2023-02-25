@@ -9,7 +9,7 @@
 #include "includes.hpp"
 
 
-class Client;
+
 enum Mode {
     READ,
     WRITE,
@@ -243,6 +243,22 @@ public:
 		else
 			return (false);
 		return (true);
+	}
+
+	static std::string getFullPath(std::string &path)
+	{
+		char cwd[1024];
+
+		if (getcwd(cwd, sizeof(cwd)) != NULL){
+			return std::string(cwd) + "/" + path;
+		} else {
+			throw std::runtime_error("CWD Failed");
+		}
+	}
+
+	const std::string getPath()
+	{
+		return (path);
 	}
 };
 

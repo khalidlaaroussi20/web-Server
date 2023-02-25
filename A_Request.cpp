@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 14:53:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/21 15:40:59 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/25 17:04:04 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,4 +222,21 @@ void A_Request::setBodyAsFinished(Client &client)
 {
 	client.finished_body();
 	client.set_response_code(CREATED);
+}
+
+bool A_Request::isCgiHeaderHasValue(const std::string &header)
+{
+	return (_headersForCgi.find(header) != _headersForCgi.end());
+}
+
+
+const std::string A_Request::getCgiHeaderValue(const std::string &header)
+{
+	return (_headersForCgi.at(header));
+}
+
+
+const std::map<std::string , std::string > &A_Request::getCgiMap() 
+{
+	return (_headersForCgi);
 }

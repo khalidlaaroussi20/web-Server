@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:42:18 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/21 17:18:50 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/25 17:12:15 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void DeleteRequest::handleRequest(std::string &body, size_t size, Client &client)
 {
+	client.isForCgi = false;
 	char* path = strcpy(new char[client.path.length() + 1], client.path.c_str());
 	if (!FileSystem::isDirectory(path) && !FileSystem::file_exists(path))
 			client.set_response_code(NOT_FOUND);

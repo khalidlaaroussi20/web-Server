@@ -93,11 +93,15 @@ struct Http{
 		// cgi for get request  i don't know if i should add indexes 
 		if (client.sendError)
 			client.finished_body();
-		else if (client.requestHandler)	//handle request
+		else if (client.requestHandler && !client.body_is_done())	//handle request
 		{
 			client.requestHandler->handleRequest(body, sz, client);
 			if(client.body_is_done())
-				std::cout << "body_done " << std::endl;
+			{
+				if (client.isForCgi)
+					client.cgiHandler.prepare(client);
+				std::cout << "Body Done\n";
+			}
 		}
     };
 
@@ -106,11 +110,10 @@ struct Http{
     void sendResponse(int Client_Number)
     {
 		Client &client = _clients[Client_Number];
-		bool isHeaderSendSuccefuly = true;
 		A_Response *response =  client.responseHandler;
         if (response->isHeaderSend() == false)
 		{
-            isHeaderSendSuccefuly =  response->sendHeaderResponse(client, _reads, _writes, Client_Number);
+            bool isHeaderSendSuccefuly =  response->sendHeaderResponse(client, _reads, _writes, Client_Number);
 			if (!isHeaderSendSuccefuly)
 				_clients.dropClient(Client_Number, _reads, _writes);
 		}

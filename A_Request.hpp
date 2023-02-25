@@ -84,6 +84,12 @@ public:
 	{
 
 	};
+
+	bool isCgiHeaderHasValue(const std::string &header);
+
+	const std::string getCgiHeaderValue(const std::string &header);
+
+	const std::map<std::string , std::string > &getCgiMap();
 };
 
 
