@@ -51,20 +51,20 @@ struct Http{
 			std::string header = body.substr(0, pos);
 			body = body.substr(std::min(pos + 4, sz), sz);
 			sz = sz - std::min(pos + 4, sz);
-			if (client.requestHandler == nullptr)
+			if (client.clientInfos._requestHandler == nullptr)
 				client.factoryRequestHandlerSetter();
 			// parse request
-			client.requestHandler->parseRequestHeader(header);
-
-			if (client.requestHandler->isErrorOccured())
+			client.clientInfos._requestHandler->parseRequestHeader(header);
+			//client.set_response_code(CREATED);
+			if (client.clientInfos._requestHandler->isErrorOccured())
 			{
 				client.set_response_code(BAD_REQUEST);
 				client.finished_body();
 			}
 			else //parsing done successfuly)
 			{
-				std::string &path = client.requestHandler->getPath();
-				if (!client.requestHandler->isValidPath())
+				std::string &path = client.clientInfos._requestHandler->getPath();
+				if (!client.clientInfos._requestHandler->isValidPath())
 				{
 					client.set_response_code(BAD_REQUEST);
 					client.finished_body();
@@ -75,31 +75,26 @@ struct Http{
 					client.path = path;
 					client.setBestLocationMatched();
 					client.requestHeaderDone = true;
-					if (client.requestHandler->isRequestWellFormed(client) == false)
+					if (client.clientInfos._requestHandler->isRequestWellFormed(client) == false)
 						client.finished_body();	
 				}
 			}
+			std::cout << "*****Here Check forCGi path == " + client.path + "\n\n";
 			client.setPathRessource();// Setting path ressource
 			if (client.sendError == false)
-			{
-				if (client.isRequestForCgi())
-				{
-					client.setupHeadersForCgi(client.cgiPath);
-					//client.requestHandler->printCgisHeaders();
-				}
-			}
+				client.setIsRequestForCgi();
 			client.factoryResponseHandlerSetter();
 		}
 		// cgi for get request  i don't know if i should add indexes 
 		if (client.sendError)
 			client.finished_body();
-		else if (client.requestHandler && !client.body_is_done())	//handle request
+		else if (client.clientInfos._requestHandler && !client.body_is_done())	//handle request
 		{
-			client.requestHandler->handleRequest(body, sz, client);
+			client.clientInfos._requestHandler->handleRequest(body, sz, client);
 			if(client.body_is_done())
 			{
 				if (client.isForCgi)
-					client.cgiHandler.prepare(client);
+					client.cgiHandler.prepare(&(client.clientInfos));
 				std::cout << "Body Done\n";
 			}
 		}
@@ -110,7 +105,7 @@ struct Http{
     void sendResponse(int Client_Number)
     {
 		Client &client = _clients[Client_Number];
-		A_Response *response =  client.responseHandler;
+		A_Response *response =  client.clientInfos._responseHandler;
         if (response->isHeaderSend() == false)
 		{
             bool isHeaderSendSuccefuly =  response->sendHeaderResponse(client, _reads, _writes, Client_Number);

@@ -6,16 +6,16 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 15:58:42 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/25 17:30:02 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/26 17:14:08 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 
 #include "CGI.hpp"
-#include "client.hpp"
 
 CGI::CGI():
+	_clientInfos(0),
 	_status(0),
 	_metaVars(),
 	_readEnd(-1),
@@ -45,6 +45,7 @@ std::string  CGI::toEnvHeader(const std::string& header){
 		if (header[i] == '-')
 			res[i] = '_';
 	}
+	std::transform(res.begin(), res.end(), res.begin(), toupper);
 	return ("HTTP_" + res);
 }
 
@@ -113,21 +114,21 @@ std::string CGI::removeDotDot(std::string path) {
 	return result;
 }
 
-void CGI::prepare(Client& client)
+void CGI::prepare(ClientInfos *clientInfos)
 {
-	_client = client;
-	A_Request *request = client.requestHandler;
-	ServerConfigs *serverConfigs = client.serverConfigs;
+	_clientInfos = clientInfos;
+	A_Request *request = clientInfos->_requestHandler;
+	ServerConfigs *serverConfigs = clientInfos->_serverConfigs;
 	_metaVars["SERVER_PROTOCOL"] = request->getHttpVersion();
 	_metaVars["SERVER_PORT"] 	 = serverConfigs->getServ();
 	_metaVars["REQUEST_METHOD"]  = request->getMethod();
-	_metaVars["PATH_INFO"] 		 = client.indexPath;
-	std::string fullPath = FileSystem::getFullPath(client.indexPath);
+	_metaVars["PATH_INFO"] 		 = clientInfos->_indexPath;
+	std::string fullPath = FileSystem::getFullPath(clientInfos->_indexPath);
 	_metaVars["SCRIPT_FILENAME"] = removeDotDot(fullPath);
-	_metaVars["SCRIPT_NAME"] = client.cgiPath;
+	_metaVars["SCRIPT_NAME"] = clientInfos->_cgiPath;
 	_metaVars["QUERY_STRING"] = request->getQuery();
-	_metaVars["REMOTE_ADDR"] = client.addr;
-	_metaVars["REMOTE_PORT"] = client.port;
+	_metaVars["REMOTE_ADDR"] = clientInfos->_addr;
+	_metaVars["REMOTE_PORT"] = clientInfos->_port;
 	_metaVars["REDIRECT_STATUS"] = "200";
 	if (request->isCgiHeaderHasValue("Content-Type"))
 		_metaVars["CONTENT_TYPE"] = request->getCgiHeaderValue("Content-Type");
@@ -140,7 +141,6 @@ void CGI::prepare(Client& client)
 		if (!newHeaderForm.empty())
 			_metaVars[newHeaderForm] = iter->second;
 	}
-
 	_execCGI();
 
 }
@@ -178,8 +178,8 @@ void CGI::_execCGI(char **args, char **env, int bodyFd){
 }
 
 void CGI::_execCGI(){
-	std::string cgiPath = _client.cgiPath;
-	std::string filePath = FileSystem::getFullPath(_client.indexPath);
+	std::string cgiPath = _clientInfos->_cgiPath;
+	std::string filePath = FileSystem::getFullPath(_clientInfos->_indexPath);
 
 	//args
 	char**	args;
@@ -199,13 +199,14 @@ void CGI::_execCGI(){
 		std::strcat(env[i], iter->first.c_str());
 		std::strcat(env[i], "=");
 		std::strcat(env[i], iter->second.c_str());
+		std::cout << env[i] << std::endl;
 		i++;
 	}
 	env[i] = NULL;
 
 	//cgi
-	if (!_client.cgiFilePath.empty()){
-		_bodyFd = open(_client.cgiFilePath.c_str(), O_RDONLY);
+	if (!_clientInfos->_cgiFilePath.empty()){
+		_bodyFd = open(_clientInfos->_cgiFilePath.c_str(), O_RDONLY);
 		if (_bodyFd == -1){
 			std::runtime_error("CGI Open Failed");
 		}

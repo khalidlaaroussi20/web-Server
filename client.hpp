@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:06:20 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/25 17:53:33 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/26 11:34:53 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,7 @@
 #include "CGI.hpp"
 #include "parsing/configParser/Location.hpp"
 #include "parsing/configParser/ServerConfigs.hpp"
-
-
-// #include "server.hpp"
+#include "ClientInfos.hpp"
 
 class A_Request;
 class PostRequest;
@@ -39,7 +37,6 @@ class CGIResponse;
 class CgiHandler;
 class ServerConfigs;
 class Server;
-class CGI;
 
 
 #define ServerMap std::map<std::string, Server >
@@ -49,8 +46,6 @@ class Client
 	public :
 		socklen_t 				address_length;
 		struct sockaddr_storage addresStorage;
-		std::string				addr;
-		std::string				port;
 		SOCKET 					socket;
 		char 					request[MAX_REQUEST_SIZE + 1];
 		std::string 			path;
@@ -58,18 +53,16 @@ class Client
 		unsigned long long 		received;
 		StatusCode 				responseCode;
 		bool					sendError;
-		A_Request   			*requestHandler;
-		A_Response				*responseHandler;
+		//A_Request   			*requestHandler;
+		//A_Response				*responseHandler;
 		bool					requestHeaderDone;
-		ServerConfigs			*serverConfigs;// reset if we reset request?
+		//ServerConfigs			*serverConfigs;// reset if we reset request?
 		bool 					body_done;
-		Location				*bestLocationMatched;
+		//Location				*bestLocationMatched;
 		bool					isHeaderSend;
 		bool					isForCgi;
-		std::string				cgiPath;
-		std::string				indexPath;
-		std::string				cgiFilePath;
-		//CGI						cgiHandler;
+		ClientInfos				clientInfos;
+		CGI						cgiHandler;
 
 
 		Client();
@@ -80,7 +73,7 @@ class Client
 
 		ServerConfigs &getserverConfigs()
 		{
-			return (*serverConfigs);
+			return (*(clientInfos._serverConfigs));
 		}
 
 		const char *get_address(); //return address client as string
@@ -99,11 +92,10 @@ class Client
 
 		void setPathResponse();
 
-		void setupHeadersForCgi(std::string &cgiPath);
 		void listDirectoryIntoFile(std::string &path);
 		void setClientInfo();
 
-		bool isRequestForCgi();
+		void setIsRequestForCgi();
 
 		void setIndexPath();
 

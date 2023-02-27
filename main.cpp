@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 16:34:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/25 17:42:16 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/27 12:12:03 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,13 +89,6 @@ int main(int ac , char **av)
 				fprintf(stderr, "select() failed. (%d)\n", GETSOCKETERRNO());
 				break;
 			}
-			// std::cout << "socketready " << std::flush;
-			// for(int i = 0; i < maxSocketSoFar + 1; i++)
-			// {
-			// 	if (FD_ISSET(i, &readyReads))
-			// 		std::cout << i << " ";
-			// }
-			// std::cout << std::endl;
 			for (auto &xs : servers)
 			{
 				// first server with that ip + port of different host_names
@@ -112,7 +105,7 @@ int main(int ac , char **av)
 						http.getRequest(i,xs.second);
 					if (i >= 0 && i < clients.getNumberClient() && FD_ISSET(clients[i].socket, &readyWrites) && clients[i].body_is_done())
 					{
-						if (clients[i].isForCgi && clients[i].cgiHandler.getStatus() != CGI::DONE);
+						if (clients[i].isForCgi && clients[i].cgiHandler.getStatus() != CGI::DONE)
 							clients[i].cgiHandler.read();
 						if (clients[i].isForCgi == false || clients[i].cgiHandler.getStatus() == CGI::DONE)
 							http.sendResponse(i);
@@ -123,7 +116,7 @@ int main(int ac , char **av)
 		catch (std::exception &e)
 		{
 			std::cout << "error happend " <<  e.what() << std::endl;
-			break;
+			continue;
 		}
 	}
 	closeHosts(servers);

@@ -86,6 +86,7 @@ public:
 	};
 
 	bool isCgiHeaderHasValue(const std::string &header);
+	static std::pair <std::string , std::string> parseCgiHeader(HeaderParser &parser);
 
 	const std::string getCgiHeaderValue(const std::string &header);
 

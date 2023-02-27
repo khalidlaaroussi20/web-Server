@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/12 17:48:36 by mel-amma          #+#    #+#             */
-/*   Updated: 2023/02/25 16:38:25 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/27 14:02:31 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ PostRequest::PostRequest()
 {
     file_initialized = false;
     is_chunked = false;
+	received = 0;
 };
 
 bool PostRequest::post_init()
@@ -27,6 +28,7 @@ bool PostRequest::post_init()
         std::vector<std::string> content_type_vector = it->second;
         std::string content_len = content_type_vector[0];
         body_length = std::stoi(content_len);
+		
     }
     else
     {
@@ -51,7 +53,7 @@ bool PostRequest::open_file(std::string &contentType, Client &client)
 	if (client.isForCgi)
 		pathDir = "/tmp/";
 	else
-		pathDir = client.bestLocationMatched->getUploadPass();
+		pathDir = client.clientInfos._bestLocationMatched->getUploadPass();
 	if (FileSystem::isDirectory(pathDir.c_str()))
 	{
 		std::cout << "created File\n";
@@ -60,7 +62,7 @@ bool PostRequest::open_file(std::string &contentType, Client &client)
 		fs = FileSystem(pathDir /*get best match*/, WRITE, ContentTypes::getExtention(contentType));
 		fs.open();
 		if (client.isForCgi)
-			client.cgiFilePath = fs.getPath();
+			client.clientInfos._cgiFilePath = fs.getPath();
 		file_initialized = true;
 		return (true);
 	}
@@ -79,15 +81,13 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
     // std::cout << body << std::endl;
 	size_t total_size = body.length();
     auto it = _headers.find("Content-Type");
-    if (it == _headers.end())
+	std::vector<std::string> content_type_vector;
+    std::string content_type;
+    if (it != _headers.end())
     {
-        // case no body
-        client.finished_body();
-        return;
+       	content_type_vector = it->second;
+        content_type = content_type_vector[0];
 	}
-
-	std::vector<std::string> content_type_vector = it->second;
-    std::string content_type = content_type_vector[0];
 
     if (!file_initialized)
     {  
@@ -97,10 +97,10 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
             client.finished_body();
             return ;
         }
-        if(!client.serverConfigs->size_limit_found())
+        if(!client.clientInfos._serverConfigs->size_limit_found())
             size_limit = std::string::npos;
         else
-            size_limit = client.serverConfigs->getMaxClientBodySize(); 
+            size_limit = client.clientInfos._serverConfigs->getMaxClientBodySize(); 
     }
     
     std::vector<const char *>  chunks;
@@ -113,13 +113,6 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
             return ;
         }
     }
-    /*
-        if chunked then clean it first then forward to the next ifs
-        update size after cleaning the body of chunk (just clean of chunk and its size and send it in even if its half a reques
-        just as if you were gonna send a normal request, chunk will help us to only define when to stop (when its 0))
-        check if chunk size is in midde of the request (in case he sends two chuncks and you recv 1 and a half)
-        if chunk size is 0 meaning its done then  close and flag up its done with body
-    */
    	if (content_type == "multipart/form-data" && !client.isForCgi)
     {
         if(is_chunked)
@@ -133,7 +126,7 @@ void PostRequest::handleRequest(std::string &body, size_t size, Client &client)
 
         }
         else if(!handle_boundary(body,size,client))
-                return;
+            return;
 
     }
     else

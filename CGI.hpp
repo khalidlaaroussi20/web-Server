@@ -6,22 +6,18 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 15:58:42 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/25 17:45:41 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/25 18:31:40 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-/***************************************************/
-/*     created by TheWebServerTeam 2/24/23         */
-/***************************************************/
 
 #ifndef DUMMY_CLIENT_CGI_H
 #define DUMMY_CLIENT_CGI_H
 
 
 #include "includes.hpp"
+#include "ClientInfos.hpp"
 
-
-class Client;
 
 
 
@@ -34,7 +30,7 @@ class CGI
 	public:
 		typedef std::map<std::string, std::string> meta_var_type;
 	private:
-		Client			_client;
+		ClientInfos		*_clientInfos;
 		int 			_status;
 		meta_var_type	_metaVars;
 		int 			_CGIPid;
@@ -42,9 +38,6 @@ class CGI
 		int 			_bodyFd;
 		std::string 	_outFilePath;
 		int				_outFileFd;
-	private:
-		CGI(const CGI& other);
-		CGI& operator=(const CGI& other);
 		
 	public:
 
@@ -67,7 +60,7 @@ class CGI
 
 		std::string removeDotDot(std::string path);
 		
-		void prepare(Client& client);
+		void prepare(ClientInfos *clientInfos);
 
 		void read();
 	private:

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 12:26:09 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/23 16:21:11 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/26 13:35:26 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ class StaticResponseMessages
 			Messages[NOT_IMPLEMENTED] = " Not Implemented ";
 
 			Messages[MOVED_PERMANETLY] = " Moved Permanetly ";
-
+			Messages[FOUND] = " Found ";
+			Messages[PERMANENT_REDIRECT] = " Permanent Redirect";
 			return (Messages);
 		}
 
@@ -48,6 +49,7 @@ class StaticResponseMessages
 		{
 			return (MAPPING_RESPONSE_CODE_TO_MESSAGES[responseCode]);
 		}
+
 };
 
 

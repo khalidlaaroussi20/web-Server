@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 12:56:24 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/22 17:53:32 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/26 13:52:46 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,9 +82,10 @@ class HeaderParser
 		std::string getHeaderValue()
 		{
 			std::string nextToken = "";
+			unsigned int startIdx = _currPos;
 			while (_currPos < _request.length())
 			{
-				if (_request[_currPos] == ':')
+				if (_request[_currPos] == ':' && _currPos == startIdx)
 				{
 					_currPos++;
 					skipSpaces();

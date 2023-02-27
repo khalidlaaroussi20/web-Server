@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/09 12:38:10 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/25 17:48:20 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/26 17:30:44 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,7 @@ Client::Client()
 	responseCode = OK;
 	sendError = isHeaderSend = false;
 	requestHeaderDone = false;
-	requestHandler = nullptr;
-	responseHandler = nullptr;
 	body_done = false;
-	bestLocationMatched = nullptr;
 	isForCgi = false;
 }
 
@@ -45,10 +42,7 @@ Client::Client(SOCKET socket)
 	responseCode = OK;
 	sendError = isHeaderSend = false;
 	requestHeaderDone = false;
-	requestHandler = nullptr;
-	responseHandler = nullptr;
 	body_done = false;
-	bestLocationMatched= nullptr;
 	isForCgi = false;
 }
 
@@ -68,8 +62,8 @@ void Client::setClientInfo() //setting ip address and port for client
 			buffAddress, sizeof(buffAddress),
 			buffPort, sizeof(buffPort),
 			NI_NUMERICHOST | NI_NUMERICSERV);
-	addr = buffAddress;
-	port = buffPort;
+	clientInfos._addr = buffAddress;
+	clientInfos._port = buffPort;
 }
 void Client::set_response_code(StatusCode responseCode)
 {
@@ -80,6 +74,7 @@ void Client::set_response_code(StatusCode responseCode)
 
 void Client::factoryRequestHandlerSetter()
 {
+	A_Request *requestHandler;
 	if (strncmp("GET /", request, 5) == 0)
 		requestHandler = new GetRequest();
 	else if (strncmp("POST /", request, 5) == 0)
@@ -92,21 +87,25 @@ void Client::factoryRequestHandlerSetter()
 		set_response_code(METHOD_NOT_ALLOWED);
 		finished_body();
 	}
+
+	clientInfos.setRequestHandler(requestHandler);
 	
 }
 
 void Client::factoryResponseHandlerSetter()
 {
+	A_Response *responseHandler;
 	if (isForCgi)
 		responseHandler = new CGIResponse();
 	else
 		responseHandler = new NResponse();
+	clientInfos.setResponseHandler(responseHandler);
 }
 
 
 void Client::set_request_configs(ServerConfigs	*serverConfigs_)
 {
-	serverConfigs = serverConfigs_;
+	clientInfos.setServerConfigs(serverConfigs_);
 };
 
 void Client::finished_body()
@@ -116,8 +115,8 @@ void Client::finished_body()
 
 void Client::setBestLocationMatched()
 {
-	if (serverConfigs)
-		bestLocationMatched = &(serverConfigs->getBestMatchedLocation(path));
+	if (clientInfos._serverConfigs)
+		clientInfos._bestLocationMatched = &(clientInfos._serverConfigs->getBestMatchedLocation(path));
 }
 
 bool Client::body_is_done()
@@ -129,8 +128,8 @@ bool Client::body_is_done()
 
 void Client::setServerConfigs( ServerMap& servers)
 {
-	A_Request::headersType headers = requestHandler->getHeaders();
-	serverConfigs = &((servers.begin())->second.getServerConfigs());
+	A_Request::headersType headers = clientInfos._requestHandler->getHeaders();
+	clientInfos._serverConfigs = &((servers.begin())->second.getServerConfigs());
 	auto it = servers.find("Host");
 	if (it == servers.end())
 		return ;
@@ -139,7 +138,7 @@ void Client::setServerConfigs( ServerMap& servers)
 	{
 		if (host == serv.first)
 		{
-			serverConfigs = &(serv.second.getServerConfigs());
+			clientInfos._serverConfigs = &(serv.second.getServerConfigs());
 			break ;
 		}
 	}
@@ -169,7 +168,7 @@ void Client::setPathResponse()
 {
 	if (fp)
 		fclose(fp);
-	std::string errorPath = serverConfigs->getResponsePage(responseCode);
+	std::string errorPath = clientInfos._serverConfigs->getResponsePage(responseCode);
 	std::cout << "response Code = " << responseCode << " errorPath = "<< errorPath << std::endl;
 	path = errorPath;
 	fp = fopen(path.c_str(), "rb");
@@ -179,8 +178,8 @@ void Client::setPathResponse()
 
 void Client::setPathRessource()
 {
-	Location &bestLocation = *bestLocationMatched;
-	path = requestHandler->getPathRessource(bestLocation);
+	Location &bestLocation = *clientInfos._bestLocationMatched;
+	path = clientInfos._requestHandler->getPathRessource(bestLocation);
 }
 
 
@@ -188,15 +187,14 @@ void Client::tryOpenRessource()
 {
 	if (!sendError)
 	{
-		std::cout << "ttt here << path = " << path << " indexPath = " << indexPath << std::endl;;
-		Location &bestLocation = *bestLocationMatched;
+		Location &bestLocation = *clientInfos._bestLocationMatched;
 
 		if (FileSystem::isDirectory(path.c_str()))
 		{
-			if (indexPath != path)
-				fp = fopen(indexPath.c_str(), "rb");	
+			if (clientInfos._indexPath != path)
+				fp = fopen(clientInfos._indexPath.c_str(), "rb");	
 			if (fp)
-				path = indexPath;
+				path = clientInfos._indexPath;
 			else if ((bestLocation.getAutoIndex()))
 				listDirectoryIntoFile(path);
 			else
@@ -211,7 +209,6 @@ void Client::tryOpenRessource()
 
 void Client::listDirectoryIntoFile(std::string &path)
 {
-	std::cout << "open Dir  = "<< path << std::endl;
 	DIR* dir = opendir(path.c_str());
 	if (dir == NULL) {
 		set_response_code(NOT_FOUND);
@@ -229,7 +226,7 @@ void Client::listDirectoryIntoFile(std::string &path)
 	std::string fileContent = "<html><head><title>Example Page</title></head><body><h1>List Files : </h1><ul>";
 	
 	while (entry != NULL) {
-		std::string url = requestHandler->getPath();
+		std::string url = clientInfos._requestHandler->getPath();
 		if (url[url.length() - 1] != '/')
 			url += "/";
 		url += entry->d_name;
@@ -246,7 +243,7 @@ void Client::listDirectoryIntoFile(std::string &path)
 
 void Client::setIndexPath()
 {
-	Location &bestLocation = *bestLocationMatched;
+	Location &bestLocation = *clientInfos._bestLocationMatched;
 	if (FileSystem::isDirectory(path.c_str()))
 	{
 		std::vector <std::string> &indexes =  bestLocation.getIndexes();
@@ -255,52 +252,35 @@ void Client::setIndexPath()
 			std::string fullPath = path + "/" + indexes[i];
 			if (FileSystem::file_exists(fullPath.c_str()))
 			{
-				indexPath = fullPath;
+				clientInfos._indexPath = fullPath;
 				break;
 			}
 		}
 	}
 }
 
-bool Client::isRequestForCgi()
+void Client::setIsRequestForCgi()
 {
-	indexPath = path;
+	clientInfos._indexPath = path;
 	setIndexPath();
-	std::string extention = FileSystem::getExtention(indexPath, true);
-	std::string pathCgi = bestLocationMatched->getPathCgi(extention);
+	std::string extention = FileSystem::getExtention(clientInfos._indexPath, true);
+	std::string pathCgi = clientInfos._bestLocationMatched->getPathCgi(extention);
 	if (!pathCgi.empty())
 	{
 		isForCgi = true;
-		cgiPath = pathCgi;
+		clientInfos._cgiPath = pathCgi;
+		std::cout << "is For Cgis*******\n\n";
 	}
-	return (!pathCgi.empty());
 	
 }
 
-void Client::setupHeadersForCgi(std::string &cgiPath)
-{
-	requestHandler->addHeaderToCgi("script_name", cgiPath);
-	requestHandler->addHeaderToCgi("server_protocol", requestHandler->getHttpVersion());
-	requestHandler->addHeaderToCgi("server_port", serverConfigs->getServ());
-	requestHandler->addHeaderToCgi("request_method", requestHandler->getMethod());
-	requestHandler->addHeaderToCgi("path_info", indexPath);
-	std::string fullPath = FileSystem::get_current_dir();
-	if (cgiPath[0] != '/')
-		fullPath += '/';
-	fullPath += indexPath;
-	requestHandler->addHeaderToCgi("path_translated", fullPath);
-	requestHandler->addHeaderToCgi("query_string", requestHandler->getQuery());
-	requestHandler->addHeaderToCgi("remote_addr", addr);
-	requestHandler->addHeaderToCgi("remote_port", port);
-}
-
-
 Client::~Client()
 {
-	if (requestHandler)
-		delete requestHandler;
-	if (responseHandler)
-		delete responseHandler;
-	requestHandler = nullptr;
-	responseHandler = nullptr;
+	std::cout << "Destruct client\n\n";
+	// if (clientInfos._requestHandler)
+	// 	delete clientInfos._requestHandler;
+	// if (clientInfos._responseHandler)
+	// 	delete clientInfos._responseHandler;
+	// clientInfos._requestHandler = nullptr;
+	// clientInfos._responseHandler = nullptr;
 }

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/08 14:37:58 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/24 14:51:39 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/27 12:49:17 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class PostRequest : public  A_Request
 	FileSystem 				fs;
 	size_t 					received;
 	bool 					file_initialized;
-	int 					body_length;
+	size_t 					body_length;
 	bool 					is_chunked;
 	ChunkContentHandler 	chunk_handler;
 	BoundaryHandler 		boundary_handler;

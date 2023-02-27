@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/15 14:53:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/25 17:04:04 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/26 17:25:44 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,28 +50,28 @@ std::string A_Request::getHeaderCgiValue(std::string header)
 }
 
 
+std::pair <std::string , std::string>  A_Request::parseCgiHeader(HeaderParser &parser)
+{
+	std::pair <std::string , std::string> p;
+	std::string keysDelimeters = ":";
+	p.first = parser.getNextToken(keysDelimeters);
+	if (!p.first.empty())
+		p.second= parser.getHeaderValue();
+	return (p);
+}
 
 
 void A_Request::setHeadersForCgi(std::string &request)
 {
-	std::string keysDelimeters = ":";
+	
 	HeaderParser parser(request);
 	parser.getHeaderValue();
 	
 	while (!parser.isDoneParsing())
 	{
-		std::string requestHeader = parser.getNextToken(keysDelimeters);
-		if (!requestHeader.empty())
-		{
-			std::string  value = parser.getHeaderValue();
-			_headersForCgi["http_" + requestHeader] = value;
-		}
+		std::pair <std::string , std::string> p = parseCgiHeader(parser);
+		_headersForCgi[p.first] = p.second;
 	}
-
-	// for (auto xs : _headersForCgi)
-	// {
-	// 	std::cout << xs.first << " : " << xs.second << std::endl;
-	// }
 
 }
 
@@ -95,7 +95,7 @@ void A_Request::setHeadersRequest(std::string &request)
 {
 	std::string keysDelimeters = ":";
 	std::string valuesDelimeters = ";,=:";
-	std::cout << request << std::endl;
+	//std::cout << request << std::endl;
 	HeaderParser parser(request);
 	_method = parser.getNextToken(keysDelimeters);
 	
@@ -128,6 +128,7 @@ void A_Request::setHeadersRequest(std::string &request)
 
 void A_Request::parseRequestHeader(std::string &request)
 {
+	//std::cout << request << std::endl;
 	setHeadersRequest(request);
 	setHeadersForCgi(request);
 }
@@ -166,7 +167,7 @@ bool A_Request::isRequestWellFormed(Client &client)
 		client.set_response_code(BAD_REQUEST);
 		return (false);
 	}
-	if (!client.bestLocationMatched->isMethodAllowed(client.requestHandler->getMethod()))
+	if (!client.clientInfos._bestLocationMatched->isMethodAllowed(client.clientInfos._requestHandler->getMethod()))
 	{
 		client.set_response_code(METHOD_NOT_ALLOWED);
 		return (false);
@@ -176,7 +177,7 @@ bool A_Request::isRequestWellFormed(Client &client)
 		client.set_response_code(REQUEST_URI_TOO_LONG);
 		return (false);
 	}
-	if (client.bestLocationMatched && !client.bestLocationMatched->getRedirect().empty())
+	if (client.clientInfos._bestLocationMatched && !client.clientInfos._bestLocationMatched->getRedirect().empty())
 	{
 		client.set_response_code(MOVED_PERMANETLY);
 		return (false);

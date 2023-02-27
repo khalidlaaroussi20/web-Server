@@ -6,11 +6,12 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/24 11:42:23 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/24 15:26:52 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/26 17:28:12 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "CGIResponse.hpp"
+#include "A_Request.hpp"
 
 
 CGIResponse::CGIResponse()
@@ -37,41 +38,56 @@ void CGIResponse::_parseCgiHeader(std::string buffer ,Client &client)
 	this->_setBody(buffer.substr(pos + 4, buffer.length()));
 	HeaderParser parser(_header);
 	std::string keysDelimeters = ":";
-	std::string valuesDelimeters = ";,=:";
-	bool isErrorOccurs = false;
 	while (!parser.isDoneParsing())
 	{
-		std::string requestHeader = parser.getNextToken(keysDelimeters);
-		if (!requestHeader.empty())
-		{
-			std::vector < std::string >  values = parser.getValuesCurrToken(valuesDelimeters, isErrorOccurs);
-			if (isErrorOccurs)
-			{
-				client.set_response_code(BAD_REQUEST);
-				return ;
-			}
-			_cgiHeaders[requestHeader] = values;
-		}
+		std::pair <std::string , std::string> p = A_Request::parseCgiHeader(parser);
+		_cgiHeaders.insert(p);
 	}
 }
+
+bool	CGIResponse::_cgiHasHeader(const std::string &header)
+{
+	return (_cgiHeaders.find(header) != _cgiHeaders.end());
+}
+
 
 
 std::string CGIResponse::getHeaderResponse(Client &client)
 {
+	client.fp = fopen(client.cgiHandler.getOutFilePath().c_str(), "rb");
+	if (!client.fp)
+	{
+		client.set_response_code(INTERNAL_SERVER_ERROR);
+		client.createResponseFile();
+	}
 	char buffer[BUFFER_SIZE + 1];
 	memset(buffer, 0, BUFFER_SIZE + 1);
-	fread(buffer, 1,BUFFER_SIZE, client.fp);
-	_parseCgiHeader(buffer, client);
-	std::string headerRespone = client.requestHandler->getHttpVersion() + " " +  std::to_string(client.responseCode);
-	fseek(client.fp, 0L, SEEK_END);
+	size_t sz = fread(buffer, 1,BUFFER_SIZE, client.fp);
+	std::cout << "buffer === "  << buffer << std::endl;
+	_parseCgiHeader(std::string(buffer, sz), client);
+	StatusCode status = OK;
+	if (_cgiHasHeader("Status"))
+	{
+		auto it = _cgiHeaders.find("Status");
+		status =  static_cast <StatusCode>(stoi(it->second));
+	}
+	if (_cgiHasHeader("Location"))
+		status =  MOVED_PERMANETLY;
+	std::cout << "status = " << status << std::endl;
+	std::string headerRespone = client.clientInfos._requestHandler->getHttpVersion() + " " +  std::to_string(status) + " ";
+	headerRespone += StaticResponseMessages::getMessageResponseCode(status) + "\r\n";
+	for (auto xs: _cgiHeaders)
+	{
+		if (xs.first != "Status")
+			headerRespone += xs.first + ": " + xs.second + "\r\n";
+	}
+	long int posCursor = ftell(client.fp);
+	fseek(client.fp, SEEK_CUR, SEEK_END);
 	size_t fileSize = ftell(client.fp);
-	rewind(client.fp);
-	std::string extention = FileSystem::getExtention(client.path);
-	std::string contentType =  ContentTypes::getContentType(extention);
-	headerRespone += StaticResponseMessages::getMessageResponseCode(client.responseCode);
-	if (client.responseCode == MOVED_PERMANETLY)
-		headerRespone += "\r\nLocation: " + client.bestLocationMatched->getRedirect();
-	headerRespone += "\r\nConnection: close\r\nContent-Length: " + std::to_string(fileSize) +  "\r\nContent-Type: " + contentType + "; charset=utf-8 \r\n\r\n";
+	fseek(client.fp, posCursor, SEEK_SET);
+	fileSize -= (_header.size() + 5);
+	//std::cout << "fileSize = " << fileSize << std::endl;
+	headerRespone += "Connection: close\r\nContent-Length: " + std::to_string(fileSize) +" \r\n\r\n";
 	headerRespone += _body;
 	return (headerRespone);
 }

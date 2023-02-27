@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/07 11:19:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/21 15:47:09 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/26 13:33:42 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ enum StatusCode
 	CREATED = 201,
 	NO_CONTENT = 204,
 	NOT_IMPLEMENTED = 501,
-	MOVED_PERMANETLY = 301
+	MOVED_PERMANETLY = 301,
+	FOUND = 302,
+	PERMANENT_REDIRECT = 308
 };
 
 

@@ -6,7 +6,7 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 15:49:29 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/23 14:16:23 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/25 18:19:20 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ class Server
 		
 		std::string  getHeaderResponse(Client &client)
 		{
-			std::string headerRespone = client.requestHandler->getHttpVersion() + " " +  std::to_string(client.responseCode);
+			std::string headerRespone = client.clientInfos._requestHandler->getHttpVersion() + " " +  std::to_string(client.responseCode);
 			fseek(client.fp, 0L, SEEK_END);
 			size_t fileSize = ftell(client.fp);
 			rewind(client.fp);
@@ -126,7 +126,7 @@ class Server
 			std::string contentType =  ContentTypes::getContentType(extention);
 			headerRespone += StaticResponseMessages::getMessageResponseCode(client.responseCode);
 			if (client.responseCode == MOVED_PERMANETLY)
-				headerRespone += "\r\nLocation: " + client.bestLocationMatched->getRedirect();
+				headerRespone += "\r\nLocation: " + client.clientInfos._bestLocationMatched->getRedirect();
 			headerRespone += "\r\nConnection: close\r\nContent-Length: " + std::to_string(fileSize) +  "\r\nContent-Type: " + contentType + "; charset=utf-8 \r\n\r\n";
 			return (headerRespone);
 		}
@@ -144,7 +144,7 @@ class Server
 			std::string responseHeader = getHeaderResponse(client);
 			std::cout << responseHeader << std::endl;	
 			if (send(client.socket, responseHeader.c_str(), responseHeader.length(), 0)  == -1 ||\
-			 		client.requestHandler->getMethod() == "HEAD")// || isRedirection(client.responseCode))
+			 		client.clientInfos._requestHandler->getMethod() == "HEAD")// || isRedirection(client.responseCode))
 			{
 				fclose(client.fp);
 				client.fp = nullptr;
