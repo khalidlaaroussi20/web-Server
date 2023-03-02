@@ -6,27 +6,21 @@
 /*   By: klaarous <klaarous@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 16:34:04 by klaarous          #+#    #+#             */
-/*   Updated: 2023/02/15 12:45:36 by klaarous         ###   ########.fr       */
+/*   Updated: 2023/02/28 17:22:23 by klaarous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "webserv.hpp"
 
-std::vector<std::map <std::string, int > > StaticConfig::SERVER_CONFIGS = StaticConfig::MakeServerConfigVector();
+std::map<std::string, ServerMap > servers;
 
-std::map < int  , std::string> StaticErrorPages::ERROR_PAGES = StaticErrorPages::S_InitErrorPages();
-
-
-std::map <std::string, std::string > ContentTypes::S_CONTENT_TYPES_MAPPING =  ContentTypes::S_setContentTypesMapping();
-std::map <std::string, std::string > ContentTypes::S_EXTENTIONS_MAPPING =  ContentTypes::S_setExtentionsMapping();
-
-
-std::map <std::string, bool> SupportedMethods::SUPPORTED_METHODS =  SupportedMethods::S_SetSupportedMethods();
-
-
-std::map < int  , std::string> StaticResponseMessages::MAPPING_RESPONSE_CODE_TO_MESSAGES = StaticResponseMessages::S_initResponseMessages();
-
+void handler(int sig){
+	if (sig == SIGINT){
+		printf("Closing Server.\n");
+		closeHosts(servers);
+		exit(0);
+	}
+}
 
 std::string readFile(std::string file)
 {
@@ -46,22 +40,18 @@ std::string readFile(std::string file)
 	return (fileContents);
 };
 
-
-
-
 int main(int ac , char **av)
 {
-
+	std::srand(std::time(nullptr));
 	if (ac != 2)
 	{
 		std::cerr << "number argument Not valid !" << std::endl;
 		return (0);
 	}
+	signal(SIGINT, handler);
 	std::ifstream myfile (av[1]);
 	ConfigParser parser = ConfigParser(readFile(av[1]));
-	
 	//map<host+ip , <map <server name,server>>>
-	std::map<std::string, ServerMap > servers;
 	SOCKET maxSocketSoFar = -1;
 	fd_set reads , writes, readyReads, readyWrites;
 
@@ -69,7 +59,7 @@ int main(int ac , char **av)
 	servers = parser.parseServerConfig();
 	if(!CreateHostSockets(servers, maxSocketSoFar, reads, writes))
 		return (0);
-
+	
 	while (1)
 	{
 		try
@@ -80,38 +70,58 @@ int main(int ac , char **av)
 				fprintf(stderr, "select() failed. (%d)\n", GETSOCKETERRNO());
 				break;
 			}
-			// std::cout << "socketready " << std::flush;
-			// for(int i = 0; i < maxSocketSoFar + 1; i++)
-			// {
-			// 	if (FD_ISSET(i, &readyReads))
-			// 		std::cout << i << " ";
-			// }
-			// std::cout << std::endl;
-			for (auto &xs : servers)
-			{
+
+			for (std::map<std::string, ServerMap >::iterator iter = servers.begin(); iter != servers.end(); ++iter){
+				std::map<std::string, ServerMap >::value_type& xs = *iter;
 				// first server with that ip + port of different host_names
-				auto &ser = *(xs.second.begin()); 
+				ServerMap::iterator::value_type &ser = *(xs.second.begin());
 				Server &server = ser.second;//getting server from the map
 				ListClients &clients = server.getClients();
 				ft::Http http(reads, writes, clients, server);
 				if (FD_ISSET(server.getSocket(), &readyReads))
 					server.addClient(maxSocketSoFar, reads, writes);
-				for (int i = 0; i < clients.getNumberClient(); i++)
+				for (size_t i = 0; i < clients.getNumberClient(); i++)
 				{
-					int sizeClient = clients.getNumberClient();
-					if (FD_ISSET(clients[i].socket, &readyReads))
-						http.getRequest(i,xs.second);
-					if (i >= 0 && FD_ISSET(clients[i].socket, &readyWrites) && clients[i].body_is_done())
+					try
 					{
-						http.sendResponse(i);
+						if (FD_ISSET(clients[i].socket, &readyReads))
+							http.getRequest(i,xs.second);
+					}
+					catch(const std::exception& e)
+					{
+						clients[i].set_response_code(INTERNAL_SERVER_ERROR);
+						clients[i].finished_body();
+						clients[i].isForCgi = false;
+						//std::cout << "error Happend?\n\n";
+					}
+					
+					
+					if (i < clients.getNumberClient() && FD_ISSET(clients[i].socket, &readyWrites) && clients[i].body_is_done())
+					{
+						if (clients[i].isForCgi)
+						{
+							if (clients[i].cgiHandler.getStatus() != CGI::DONE)
+							{
+								clients[i].cgiHandler.read();
+								if (clients[i].cgiHandler.getStatus() == CGI::ERROR)
+								{
+									std::cout << "error Happend!!\n\n";
+									clients[i].set_response_code(INTERNAL_SERVER_ERROR);
+									clients[i].isForCgi = false;
+								}
+							}
+						}
+						
+						if (clients[i].isForCgi == false || clients[i].cgiHandler.getStatus() == CGI::DONE)
+							http.sendResponse(i);
 					}
 				}
 			}
 		}
 		catch (std::exception &e)
 		{
-			std::cout << "error happend " <<  e.what() << std::endl;
-			break;
+			std::cout << "error  " <<  e.what() << std::endl;
+			continue;
 		}
 	}
 	closeHosts(servers);

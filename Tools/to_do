@@ -1,0 +1,26 @@
+
+metaVars["SERVER_PROTOCOL"] = headers["protocol"];
+metaVars["SERVER_PORT"] = headers["port"]; //decimal
+metaVars["REQUEST_METHOD"] = headers["method"];
+metaVars["PATH_INFO"] = headers["path"]; //requested path
+metaVars["PATH_TRANSLATED"] = headers["fullPath"];
+metaVars["SCRIPT_NAME"] = headers["cgi_path"];
+metaVars["QUERY_STRING"] = headers["query"];
+//metaVars["REMOTE_HOST"] = headers["asd"];//host name of the client, unset if server did not perform such lookup.
+metaVars["REMOTE_ADDR"] = headers[""];//IP address of the client (dot-decimal).
+metaVars["REMOTE_PORT"] = headers[""];
+metaVars["CONTENT_TYPE"] = headers[""];
+metaVars["CONTENT_LENGTH"] = headers[""];
+
+
+
+//
+
+
+upload_pass
+
+
+body size
+
+
+#max body size doesn't work with content LENGTH POSTMAN
