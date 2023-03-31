@@ -12,6 +12,11 @@
 
 #include "webserv.hpp"
 
+
+void sigpipe_handler(int signal) {
+   (void) signal;
+}
+
 std::map<std::string, ServerMap > servers;
 
 void handler(int sig){
@@ -48,6 +53,9 @@ int main(int ac , char **av)
 		std::cerr << "number argument Not valid !" << std::endl;
 		return (0);
 	}
+
+	// Ignore SIGPIPE signal
+    signal(SIGPIPE, sigpipe_handler);
 	signal(SIGINT, handler);
 	std::ifstream myfile (av[1]);
 	ConfigParser parser = ConfigParser(readFile(av[1]));
